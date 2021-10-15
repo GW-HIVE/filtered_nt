@@ -1,3 +1,7 @@
+"""
+This script filters the nt files that were manually added in ac2taxids. 
+"""
+
 import os,sys
 import string
 from optparse import OptionParser
