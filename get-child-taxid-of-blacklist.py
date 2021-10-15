@@ -1,3 +1,25 @@
+"""
+This script generates a black list of unwanted taxonomy names (scientific names) from names.dmp
+and all child taxonomy names: [‘unclassified’,’unidentified’,’uncultured’,’unspecified’,’unknown’,
+’phage’,’vector’] and [‘environmental sample’,’artificial sequence’,’other sequence’].
+
+Input
+^^^^^
+All inputs are currently hard-coded.
+- `database.txt`: provides utility parameters for main method.
+- `taxIdFile`: path for the `../blacklist-taxId.1.csv` output file.
+
+Output
+^^^^^^
+All outputs are currently hard-coded.
+- The `blacklist-taxId.2.csv` is generated.
+
+Usage
+^^^^^
+- python get-parent-taxid-of-blacklist.py sort -u
+	- Deletes duplicated records, and store them into: /data/projects/targetdbs/generated/blacklist-taxId.unique.csv
+"""
+
 #!/usr/bin/python
 import os,sys
 import string

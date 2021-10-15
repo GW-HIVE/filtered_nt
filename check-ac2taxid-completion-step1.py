@@ -1,3 +1,8 @@
+"""
+This script is the first of three scripts that checks if all seqAcs in nt file have taxIds from nucl_gb.accession2taxid
+file, and the ones do not have taxIds are checked in all other ac2taxid files.
+"""
+
 import os,sys
 import string
 from optparse import OptionParser

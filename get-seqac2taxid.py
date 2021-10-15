@@ -1,3 +1,8 @@
+"""
+This script excludes the taxIds that are indicated in the blacklist. First, it gets all seqAc-taxIds from 
+nucl_gb.accession2taxid, and all of other ac2taxid files from both version 05/21/2017 and 05/30/2017.
+"""
+
 import os,sys
 import string
 from optparse import OptionParser
