@@ -1,6 +1,21 @@
 """
 This script is the first of three scripts that checks if all seqAcs in nt file have taxIds from nucl_gb.accession2taxid
 file, and the ones do not have taxIds are checked in all other ac2taxid files.
+
+Input
+^^^^^
+All inputs are currenlty hard-coded.
+- `patList`: path for ../nucl_*.accession2taxid.DATE
+- `ntFile`: path for nt file ../nt.DATE
+
+Output
+^^^^^^
+All outputs are currently hard-coded.
+- The `logfile.step1.txt` is generated.
+
+Usage
+^^^^^
+- Currently no options available. 
 """
 
 import os,sys
