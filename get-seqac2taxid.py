@@ -1,6 +1,21 @@
 """
 This script excludes the taxIds that are indicated in the blacklist. First, it gets all seqAc-taxIds from 
 nucl_gb.accession2taxid, and all of other ac2taxid files from both version 05/21/2017 and 05/30/2017.
+
+Input
+^^^^^
+- `patList`: path for ac2taxid../ac2taxid.2017-05-30/*
+- `ntFile`: path for ../nt.DATE
+- `manualFile` = path for the 28 manually currated records that are not included in the ntFile. 
+
+Output
+^^^^^^
+All outputs are currenlty hard-coded. 
+- The `logfile.ac2taxid.list.txt` is generated.
+
+Usage
+^^^^^
+- Currently no options available.
 """
 
 import os,sys
