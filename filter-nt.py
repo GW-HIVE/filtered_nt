@@ -1,5 +1,23 @@
 """
 This script filters the nt files that were manually added in ac2taxids. 
+
+Input
+^^^^^
+All inputs are currently hard-coded. 
+- `ntFile`: path for the downloaded ntFile ../nt.DATE
+- `ac2taxidFile`: path for the generated ac2taxid text file ../logfile.ac2taxid.list.txt
+- `ac2taxidFile2`: path for manually added logfile ../logfile.step3.manually.added.txt
+- `blackFile`: path for Blacklist csv file ../blacklist-taxId.unique.csv
+
+Output
+^^^^^^
+All outputs are currently hard-coded. 
+- The `filtered_nt_June6-2017.fasta` is generated. 
+	- Contains the final filterend nucleotide sequences in FASTA format.
+
+Usage
+^^^^^
+- Currently no options available.
 """
 
 import os,sys

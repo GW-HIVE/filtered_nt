@@ -46,9 +46,11 @@ the software.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Index
+   :caption: Summary of the protocol:
 
    modules
+
+   filter-nt
 
 
 

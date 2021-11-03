@@ -48,8 +48,9 @@ the software.
    :maxdepth: 2
    :caption: Summary of the protocol:
 
-   Summary of Protocol :ref:'_Step1'
    modules
+
+   filter-nt
 
 
 
