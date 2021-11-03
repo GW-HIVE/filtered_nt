@@ -1,5 +1,21 @@
 """
 
+
+Input
+^^^^^
+All inputs are currently hard-coded.
+- `newFile`: path for generated taxid blacklist csv file ../blacklist-taxId.unique.csv
+- `oldFile`: path for generated all taxids blacklist txt file ../Blacklist_version1_all_taxID_YH.txt
+- `compareFile`: path for ../compare-new-old-blacklist.txt
+
+Output
+^^^^^^
+All outputs are currently hard-coded.
+- The `compare-new-old-blacklist.txt` is generated.
+
+Usage
+^^^^^
+- Currently no options available. 
 """
 
 import os,sys
