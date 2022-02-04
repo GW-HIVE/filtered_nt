@@ -71,13 +71,13 @@ def UpdateSession(DBH, username, sessionAge, maxSessionAge):
 		status = 1
 		sql = ("SELECT passwd, fname, lname, sessionId, sessionTs FROM auth_user WHERE username = '%s' "
                         % (username))
-                cur.execute(sql)
-                row = cur.fetchone()
-                fullname = row[1] + ' ' + row[2]
+		cur.execute(sql)
+		row = cur.fetchone()
+		fullname = row[1] + ' ' + row[2]
 	except:
 		msg = "Update session failed"
-
-        return status, id, fullname, msg
+	
+	return status, id, fullname, msg
 
 
 
@@ -90,7 +90,7 @@ def GetSessionAge(DBH, username, sessionId):
 	sql = ''
 	sessionAge = 1000000
 	try:
- 		cur = DBH.cursor()
+		cur = DBH.cursor()
 		string = "SELECT TIMESTAMPDIFF(SECOND, sessionTs, CURRENT_TIMESTAMP) sessionAge "
 		string += " FROM %s WHERE  username = '%s' AND sessionId = '%s'"
 		sql = (string % ("auth_user", username, sessionId))
@@ -99,7 +99,7 @@ def GetSessionAge(DBH, username, sessionId):
 		sessionAge = row[0]
 		status = 1
 	except:
-                status = 0
+		status = 0
 		msg = "GetSessionAge  failed"      
 		   
 	return status, sessionAge, msg
@@ -117,54 +117,51 @@ def EncryptString(password):
 
 def LoadParams(configfile, PHASH):
 
-	FR = open(configfile, "r")
-	lines = FR.readlines()
-	for line in lines:
-		if line[0] != "#" and len(line.strip()) > 0:
-			param, value  = line.strip().split('|')
-			if param in PHASH:
-				PHASH[param] += value
-			else:
-			 	PHASH[param] = value
-        FR.close()
+	with open(configfile, "r") as FR:
+		lines = FR.readlines()
+		for line in lines:
+			if line[0] != "#" and len(line.strip()) > 0:
+				param, value  = line.strip().split('|')
+				if param in PHASH:
+					PHASH[param] += value
+				else:
+					PHASH[param] = value
 	return
 
 
 def LoadDivInfo(configfile, DHASH, pId):
 
-        FR = open(configfile, "r")
-        lines = FR.readlines()
-        for line in lines:
-                if line[0] != "#" and len(line.strip()) > 0:
-                        pageid, divid, field, value  = line.strip().split('|')
-                        if pageid == pId:
-				if divid in DHASH:
-                                	DHASH[divid] += (", \"%s\":\"%s\"" % (field, value))
-                       	 	else:
-                              		DHASH[divid] = ("\"%s\":\"%s\"" % ("id", divid))
-					DHASH[divid] += (", \"%s\":\"%s\"" % (field, value))
-        FR.close()
-        return
+		with open(configfile, "r") as FR:
+			lines = FR.readlines()
+			for line in lines:
+					if line[0] != "#" and len(line.strip()) > 0:
+							pageid, divid, field, value  = line.strip().split('|')
+					if pageid == pId:
+						if divid in DHASH:
+							DHASH[divid] += (", \"%s\":\"%s\"" % (field, value))
+						else:
+							DHASH[divid] = ("\"%s\":\"%s\"" % ("id", divid))
+							DHASH[divid] += (", \"%s\":\"%s\"" % (field, value))
+		return
 
 
 def LoadGridInfo(configfile, DHASH, pId):
 
-        FR = open(configfile, "r")
-        lines = FR.readlines()
-        for line in lines:
-                if line[0] != "#" and len(line.strip()) > 0:
-                        pageid, row, col, field, value  = line.strip().split('|')
-                        cellid = str(row) + '_' + str(col)
-			if pageid == pId:
-                                if cellid in DHASH:
-                                        DHASH[cellid] += (", \"%s\":\"%s\"" % (field, value))
-                                else:
-                                        DHASH[cellid] = ("\"%s\":\"%s\"" % ("id", cellid))
-					DHASH[cellid] += (", \"%s\":\"%s\"" % ("row", row))
-					DHASH[cellid] += (", \"%s\":\"%s\"" % ("col", col))
-                                        DHASH[cellid] += (", \"%s\":\"%s\"" % (field, value))
-        FR.close()
-        return
+		with open(configfile, "r") as FR: 
+			lines = FR.readlines()
+			for line in lines:
+				if line[0] != "#" and len(line.strip()) > 0:
+							pageid, row, col, field, value  = line.strip().split('|')
+							cellid = str(row) + '_' + str(col)
+				if pageid == pId:
+					if cellid in DHASH:
+						DHASH[cellid] += (", \"%s\":\"%s\"" % (field, value))
+					else:
+						DHASH[cellid] = ("\"%s\":\"%s\"" % ("id", cellid))
+						DHASH[cellid] += (", \"%s\":\"%s\"" % ("row", row))
+						DHASH[cellid] += (", \"%s\":\"%s\"" % ("col", col))
+						DHASH[cellid] += (", \"%s\":\"%s\"" % (field, value))
+		return
 
 
 
@@ -174,14 +171,14 @@ def  GetGlobalSections(PHASH):
 
 	groups = PHASH['GSECTIONS'].split(';')
 	tuples = ''
-        for group in groups:
+	for group in groups:
 		sections = re.split(r'[:,]', group)
 		label, secid, action, access = sections[1].split('^')
-		tuples += '{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}';
+		tuples += '{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}'
 		for i in range(2, len(sections)):
 			label, secid, action, access = sections[i].split('^')
-			tuples += ',{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}';
-	return tuples;
+			tuples += ',{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}'
+	return tuples
 
 
 #~~~~~~~~~~~~~~~~~~~~~
@@ -192,11 +189,11 @@ def  GetModuleSections(PHASH):
         for group in groups:
                 sections = re.split(r'[:,]', group)
                 label, secid, action, access = sections[1].split('^')
-                tuples += '{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}';
+                tuples += '{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}'
                 for i in range(2, len(sections)):
                         label, secid, action, access = sections[i].split('^')
-                        tuples += ',{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}';
-        return tuples;
+                        tuples += ',{"label":"'+label+'" , "id":"'+secid+'" , "action":"' + action + '"}'
+        return tuples
 
 
 
