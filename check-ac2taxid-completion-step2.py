@@ -17,13 +17,9 @@ Usage
 ^^^^^
 - Currently no options available. 
 """
-
-import os,sys
-import string
 from optparse import OptionParser
 from Bio import SeqIO
 import glob
-import MySQLdb
 import csv
 
 
@@ -37,7 +33,9 @@ def main():
 
 
 	patList = "/data/projects/targetdbs/filtered-nt/downloads/nucl_*.accession2taxid.2017-05-21"
-        fileList = glob.glob(patList)
+    
+	fileList = glob.glob(patList)
+	
 	ntFile = "/data/projects/targetdbs/filtered-nt/generated/logfile.step1.txt"
 
 
@@ -51,16 +49,16 @@ def main():
 	FW = open("/data/projects/targetdbs/filtered-nt/generated/logfile.step2.txt", "w")
 	ac2taxid = {}
 	for fileName in fileList:
-                if fileName.find("nucl_gb.accession2taxid") == -1:
+		if fileName.find("nucl_gb.accession2taxid") == -1:
 			i = 0
 			with open(fileName, 'rb') as csvfile:
-                		csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
-                		for row in csvreader:
-                        		seqAc = row[0].strip()
+				csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
+				for row in csvreader:
+					seqAc = row[0].strip()
 					if seqAc in seqAcDic:
 						seqAcDic[seqAc] = 2
 					if i%10000000 == 0:
-						print "Data reading ", fileName, i
+						print("Data reading ", fileName, i)
 					i += 1
 
 	for key,val in seqAcDic.items():
