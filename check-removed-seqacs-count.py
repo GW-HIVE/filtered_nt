@@ -13,15 +13,8 @@ Output
 Usage
 ^^^^^
 """
-
-import os,sys
-import string
 from optparse import OptionParser
-from Bio import SeqIO
-import glob
-import MySQLdb
 import csv
-import util
 
 __version__="1.0"
 __status__ = "Dev"
@@ -106,10 +99,10 @@ def main():
 
 	FW.close()
 
-	print len(seqDupList)
-	print seqDupList
-	print 'total duplicated seqacs', seqDupAll
-	print 'duplicated seqacs in blacklist', seqDupDelete
+	print(len(seqDupList))
+	print(seqDupList)
+	print('total duplicated seqacs', seqDupAll)
+	print('duplicated seqacs in blacklist', seqDupDelete)
 
 if __name__ == '__main__':
         main()
