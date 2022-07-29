@@ -21,46 +21,110 @@ Unsupported License to this version of the software.
 |Version 5.0|[Filtered_NT v5.0](https://hive.biochemistry.gwu.edu/prd//filterednt/content/Filtered_NTv5.0.fasta)|131G|[Release Notes v5.0](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv5)|May 2017|
 |Version 4.0| [Filtered NT v4.0](https://hive.biochemistry.gwu.edu/prd//filterednt/content/Filtered_NTv4.0.fasta)|110G|[Release Notes v4.0](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv4)|July 2016|
 
-
-
-
 # Summary of the protocol
 
-************************************************************************
-## Step 1. Download the whole nt file
-************************************************************************
-downloaded from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
+## Step 1. Clone this repo
 
-version: 5/21/2017
+Choose a location for the project. You will need over 500 GB of storage for just the downloads.
 
-command:
+`git clone https://github.com/GW-HIVE/filtered_nt.git`
+
+## Step 2. Create a project folder
+
+Create a new directory at the same level as the `filtered_nt` (github code) directory. You should name it something unique (mybe include the date) so that you can revisit the raw files if needed. 
+
+```shell
+> $ mkdir filtered_nt_27_07_2022
+> $ ll
+drwxrwxr-x. 5 username grpname           87 Jul 27 16:06 filtered_nt_27_07_2022
+drwxrwxr-x. 4 username grpname         4096 Jul 29 11:14 filtered_nt_git
+```
+
+## Step 3. Download and uncompress the whole nt file
+
+At the time of this writing the `nt.gz` was 197G and the uncompressed `nt` file expanded to 791G. The download took about an hour and a half and uncompressing it took about two and a half hours. *USE CARE!* 
+
+- Navigate to the project folder and create two more directories: `output_data` and `raw_data`
+- Navigate to `raw_data`
+- Download NT:
+
+    downloaded from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
+
+    version: 2022-07-25
+
+    command:
 ```
     wget ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
-    gunzip nt.gz (42,439,338 rows)
+    gunzip nt.gz (10,473,799,628 rows)
 ```
-************************************************************************
-## Step 2. Download the taxonomy list 
-************************************************************************
+
+## Step 4. Download and uncompress the accession2taxid files
+
+- Create a new directory: `accession2taxid/`
+- Navigate to `accession2taxid/`
+
+The files in this directory will provide a mapping between the accession.version from
+a nucleotide, protein, WGS or TSA sequence record and a taxonomy ID (taxid) from
+the NCBI Taxonomy database (http://www.ncbi.nlm.nih.gov/taxonomy/).
+
 downloaded from: ftp://ftp.ncbi.nih.gov/pub/taxonomy/
 
-version: 5/21/2017; 5/30/2017
+version: 2022-07-28
 
 command:
 ```
 	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/*.gz
 	gunzip *.gz
+```
+## Step 5. Download and uncompress the taxdump files
+
+- Create a new directory: `taxdump/`
+- Navigate to `taxdump/`
+
+```
 	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
 	gunzip taxdump.tar.gz |tar -xvf
 ```
-location: /data/projects/targetdbs/downloads/
 
+## Step 5. Creating a database from NCBI taxonomy data
 
-************************************************************************
-## Step 3. Generate black list
-************************************************************************
-protocol: unwanted taxonomy names (scientific names) from names.dmp and
+This step is taken from https://github.com/acorg/ncbi-taxonomy-database
 
-all child taxonomy names of them, include:
+- Navigate to the top level of this project
+- Clone the `ncbi-taxonomy-database` repo:
+
+```
+git clone https://github.com/acorg/ncbi-taxonomy-database.git
+```
+
+Your project folder should look like this now:
+
+```shell
+> $ ll
+drwxrwxr-x. 2 username grpname   10 Jul 27 14:26 output_data
+drwxrwxr-x. 5 username grpname 4096 Jul 27 16:53 ncbi-taxonomy-database
+drwxrwxr-x. 4 username grpname   90 Jul 27 17:00 raw_data
+```
+
+- Copy the requisite files into the `ncbi-taxonomy-database` repo:
+
+```
+cp raw_data/taxdump/*.dmp ncbi-taxonomy-database/data/.
+cp raw_data/accession2taxid/nucl_gb.accession2taxid.gz ncbi-taxonomy-database/data/.
+```
+
+- Navigate in to the `ncbi-taxonomy-database` directory and run `make`
+
+```
+cd ncbi-taxonomy-database/
+make
+```
+
+This will create you a (currently 20GB) Sqlite3 database file, taxonomy.db, and take about 20 minutes. 
+
+## Step 6. Generate black list
+
+protocol: unwanted taxonomy names (scientific names) from names.dmp and all child taxonomy names of them, include:
 
 - 'unclassified'
 - 'unidentified'
@@ -77,6 +141,18 @@ There are two steps for generating the black list:
 1. get all taxonomy names with the strings above
 2. to get all child taxonomy names of them.
 
+### 6.1 get all taxonomy names with the strings above
+
+- Navigate to the top level of the project. 
+- Run the `get-parent-taxid-of-blacklist.py` script. Default values are provided but you can specify other values if needed. 
+
+```
+python3 filtered_nt/get-parent-taxid-of-blacklist.py /
+    -n raw_date/taxdump/names.dmp /
+    -b output_data/blacklist-taxId.1.csv
+```
+
+python3 filtered_nt/get-parent-taxid-of-blacklist.py -n raw_date/taxdump/names.dmp -b output_data/blacklist-taxId.1.csv
 scripts: 
 1. /projects/targetdbs/scripts/get-parent-taxid-of-blacklist.py
 2. /projects/targetdbs/scripts/get-child-taxid-of-blacklist.py
