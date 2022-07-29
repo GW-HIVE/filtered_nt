@@ -1,1 +1,6 @@
 .vscode/
+.DS_Store
+data/*
+data_output/*
+data_raw/*
+env/*
