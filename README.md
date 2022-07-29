@@ -30,21 +30,28 @@ Unsupported License to this version of the software.
 ## Step 1. Download the whole nt file
 ************************************************************************
 downloaded from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
+
 version: 5/21/2017
+
 command:
+```
     wget ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
     gunzip nt.gz (42,439,338 rows)
-
+```
 ************************************************************************
 ## Step 2. Download the taxonomy list 
 ************************************************************************
 downloaded from: ftp://ftp.ncbi.nih.gov/pub/taxonomy/
+
 version: 5/21/2017; 5/30/2017
+
 command:
+```
 	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/*.gz
 	gunzip *.gz
 	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
 	gunzip taxdump.tar.gz |tar -xvf
+```
 location: /data/projects/targetdbs/downloads/
 
 
@@ -52,24 +59,35 @@ location: /data/projects/targetdbs/downloads/
 ## Step 3. Generate black list
 ************************************************************************
 protocol: unwanted taxonomy names (scientific names) from names.dmp and
-		all child taxonomy names of them, include:
-		['unclassified','unidentified','uncultured', \
-			 'unspecified','unknown','phage','vector']
-		['environmental sample','artificial sequence','other sequence']
 
-	  There are two steps for generating the black list, first is to
-		get all taxonomy names with the strings above, and then
-		to get all child taxonomy names of them.
+all child taxonomy names of them, include:
 
-script: /projects/targetdbs/scripts/get-parent-taxid-of-blacklist.py
-	/projects/targetdbs/scripts/get-child-taxid-of-blacklist.py
+- 'unclassified'
+- 'unidentified'
+- 'uncultured'
+- 'unspecified'
+- 'unknown'
+- 'phage'
+- 'vector'
+- 'environmental sample'
+- 'artificial sequence'
+- 'other sequence'
 
-output: /data/projects/targetdbs/generated/blacklist-taxId.1.csv
-	/data/projects/targetdbs/generated/blacklist-taxId.2.csv
+There are two steps for generating the black list: 
+1. get all taxonomy names with the strings above
+2. to get all child taxonomy names of them.
 
-	After generating blacklist-taxId.2.txt, use command line 
-	"sort -u" to delete duplicated records, and store them into:
-	/data/projects/targetdbs/generated/blacklist-taxId.unique.csv
+scripts: 
+1. /projects/targetdbs/scripts/get-parent-taxid-of-blacklist.py
+2. /projects/targetdbs/scripts/get-child-taxid-of-blacklist.py
+
+outputs: 
+1. /data/projects/targetdbs/generated/blacklist-taxId.1.csv
+2. /data/projects/targetdbs/generated/blacklist-taxId.2.csv
+
+After generating blacklist-taxId.2.txt, use command line 
+"sort -u" to delete duplicated records, and store them into:
+/data/projects/targetdbs/generated/blacklist-taxId.unique.csv
 
 QC script: /projects/targetdbs/scripts/compare-old-new-blacklist.py
 		Compare the newly generated with the older version.
