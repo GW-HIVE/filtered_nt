@@ -44,17 +44,16 @@ def usr_args():
     optional = parser.add_argument_group('optional arguments')
 
     required.add_argument('-n', '--name',
-        required=True,
         help="'names.dmp' file. Should contain taxonomy names (scientific"
         " names) from NCBI. Default is `./data_raw/taxdump/names.dmp`",
-        default='./data_raw/taxdump/names.dmp')
+        default='./raw_date/taxdump/names.dmp')
 
 
     optional.add_argument('-b', '--blacklist',
         help="Output file to create. The `blacklist-taxId.1.csv` is generated"
         "and used as input for the `get-chiled-taxid-of-blacklist.py` script."
         "Default is `./data_output/blacklist-taxId.1.csv` ",
-        default='./data_output/blacklist-taxId.1.csv')
+        default='./output_data/blacklist-taxId.1.csv')
     optional.add_argument('-v', '--version',
         action='version',
         version='%(prog)s ' + __version__)
@@ -63,8 +62,8 @@ def usr_args():
         default=SUPPRESS,
         help='show this help message and exit')
 
-    if len(sys.argv) <= 1:
-        sys.argv.append('--help')
+    # if len(sys.argv) <= 1:
+    #     sys.argv.append('--help')
 
     return parser.parse_args()
 
@@ -82,7 +81,7 @@ def read_names(name, blacklist):
 
     Returns
     -------
-        writes a CSV file at the indicated filepath. 
+        writes a CSV file at the indicated filepath.
     """
 
     black_name = [
