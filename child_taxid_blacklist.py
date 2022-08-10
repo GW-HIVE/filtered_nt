@@ -86,32 +86,38 @@ def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        print(conn)
     except Error as error:
         print(error)
 
     return conn
 
-def select_all_tables(conn):
-    """
+def get_lineage(tax_id=None, class_name=None):
+    """Get Lineage
     Query all rows in the tasks table
     :param conn: the Connection object
-    :return:
+    :return: Lineage
     """
-    cur = conn.cursor()
-    cur.execute("SELECT nodes.taxid, nodes.parent_taxid FROM nodes INNER JOIN names ON nodes.taxid = names.taxid AND nodes.parent_taxid='1';")
 
-    rows = cur.fetchall()
-
-    for row in rows:
-        print(row)
+    class_name = 'unclassified'
+    tax_id = '2964430'
+    cur = CONN
+    lineage = []
+    query = f"SELECT names.taxid, names.name FROM nodes INNER JOIN names ON nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid ={tax_id};"
+    cur.execute(query)
+    # rows = cur.fetchall()
+    for row in cur.fetchall():
+        child_tax = row[0]
+        tax_name = row[1]
+        print(f"{child_tax}, {class_name}, {tax_name}")
+        if child_tax != 1:
+            get_lineage(child_tax, class_name)
 
 def main():
     """Main Function"""
+
     options = usr_args()
-    conn = create_connection(options.database)
-    select_all_tables(conn)
-    print('main')
+    CONN = create_connection(options.database)
+    get_lineage()
 
 if __name__ == '__main__':
     main()
