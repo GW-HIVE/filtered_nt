@@ -12,14 +12,14 @@
     - The `blacklist-taxId.1.csv` is generated and used as input for the
     `get-chiled-taxid-of-blacklist.py` script.
 
-    usage: python get-parent-taxid-of-blacklist.py sort -u
+    usage: python parent_taxid_blacklist.py sort -u
         Deletes duplicated records, and store them
         into: /data/projects/targetdbs/generated/blacklist-taxId.unique.csv
 """
 
 from argparse import ArgumentParser, SUPPRESS
 
-__version__ = "2.0"
+__version__ = "7.0"
 __status__ = "Dev"
 
 def usr_args():
@@ -34,8 +34,8 @@ def usr_args():
 
     parser = ArgumentParser(
         add_help=False,
-        prog='get-parent-taxid-of-blacklist.py',
-        description="This scriptgenerates a black list of unwanted taxonomy"
+        prog='parent_taxid_blacklist.py',
+        description="This script generates a black list of unwanted taxonomy"
         "names (scientific names) from names.dmp and all child taxonomy names:"
         "['unclassified','unidentified','uncultured','unspecified','unknown',"
         "'phage','vector'] and ['environmental sample','artificial sequence',"
