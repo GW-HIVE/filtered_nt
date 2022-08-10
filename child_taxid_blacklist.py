@@ -106,33 +106,32 @@ def get_lineage(conn, writer, tax_id=None, class_name=None):
     """
 
     cur = conn.cursor()
-    lineage = []
-    query = f"SELECT names.taxid, names.name FROM nodes INNER JOIN names ON nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid ={tax_id};"
+    query = (
+        "SELECT names.taxid, names.name FROM nodes INNER JOIN names ON "+\
+        "nodes.taxid WHERE nodes.taxid = names.taxid AND"+\
+        f"nodes.parent_taxid ={tax_id};"
+    )
     cur.execute(query)
     rows = cur.fetchall()
     for row in rows:
         child_tax = row[0]
         tax_name = row[1]
-        writer.write(f"{child_tax}, {class_name}, {tax_name}, {tax_id}")
-        print(f"{child_tax}, {class_name}, {tax_name}, {tax_id}")
-        # if child_tax != 1:
-        #     get_lineage(conn, child_tax, class_name)
+        writer.write(f"{child_tax}, {class_name}, {tax_name}")
+        # print(f"{child_tax}, {class_name}, {tax_name}")
 
 def write_csv(blacklist, output, conn):
     """write
     """
-    count = 0
+
     with open(blacklist, 'r') as reader:
         csvreader = csv.reader(reader)
         with open(output, 'a') as writer:
+            writer.write("tax_id, class_name, tax_name")
             for row in csvreader:
-                if count > 100:
-                    break
                 tax_id = row[0]
                 class_name = row[1]
-                # print(f"{tax_id}, {class_name}")
                 get_lineage(conn, writer, tax_id, class_name)
-                count += 1
+
 def main():
     """Main Function"""
 
@@ -141,7 +140,6 @@ def main():
     output = options.output
     conn = create_connection(options.database)
     write_csv(blacklist, output, conn)
-    # get_lineage(conn)
 
 if __name__ == '__main__':
     main()
