@@ -99,7 +99,7 @@ def select_all_tables(conn):
     :return:
     """
     cur = conn.cursor()
-    cur.execute("SELECT object_id FROM api_bco")
+    cur.execute("SELECT nodes.taxid, nodes.parent_taxid FROM nodes INNER JOIN names ON nodes.taxid = names.taxid AND nodes.parent_taxid='1';")
 
     rows = cur.fetchall()
 
