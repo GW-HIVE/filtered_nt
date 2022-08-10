@@ -27,8 +27,8 @@
 __version__ = "7.0"
 __status__ = "Dev"
 
-from select import select
 import sqlite3
+from sqlite3 import Error
 from argparse import ArgumentParser, SUPPRESS
 
 def usr_args():
