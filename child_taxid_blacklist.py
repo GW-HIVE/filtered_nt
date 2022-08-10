@@ -28,6 +28,7 @@ __version__ = "7.0"
 __status__ = "Dev"
 
 import sys
+import csv
 import sqlite3
 from sqlite3 import Error
 from argparse import ArgumentParser, SUPPRESS
@@ -113,12 +114,24 @@ def get_lineage(conn, tax_id=None, class_name=None):
         # if child_tax != 1:
         #     get_lineage(conn, child_tax, class_name)
 
+def write_csv(blacklist, conn):
+    """write
+    """
+
+    with open(blacklist, 'rb') as reader:
+        csvreader = csv.reader(reader, delimiter=',', quotechar='|')
+        for row in csvreader:
+            tax_id = row[0]
+            class_name = row[1]
+            print(f"{tax_id}")
+            # get_lineage(conn, tax_id, class_name)
 def main():
     """Main Function"""
-
+    blacklist = 'output_data/blacklist-taxId.1.csv'
     options = usr_args()
     conn = create_connection(options.database)
-    get_lineage(conn)
+    write_csv(blacklist, conn)
+    # get_lineage(conn)
 
 if __name__ == '__main__':
     main()
