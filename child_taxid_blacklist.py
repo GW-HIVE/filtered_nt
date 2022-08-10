@@ -104,8 +104,8 @@ def get_lineage(conn, tax_id=None, class_name=None):
     lineage = []
     query = f"SELECT names.taxid, names.name FROM nodes INNER JOIN names ON nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid ={tax_id};"
     cur.execute(query)
-    # rows = cur.fetchall()
-    for row in cur.fetchall():
+    rows = cur.fetchall()
+    for row in rows:
         child_tax = row[0]
         tax_name = row[1]
         print(f"{child_tax}, {class_name}, {tax_name}")
