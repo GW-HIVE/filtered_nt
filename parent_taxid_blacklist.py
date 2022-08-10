@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """Get Parent TaxID of BlackList
 
-    This script generates a black list of unwanted taxonomy names (scientific names) from names.dmp
-    and all child taxonomy names: ['unclassified','unidentified','uncultured','unspecified','unknown',
-    'phage','vector'] and ['environmental sample','artificial sequence','other sequence'].
+    This script generates a black list of unwanted taxonomy names (scientific
+    names) from names.dmp and all child taxonomy names: ['unclassified',
+    'unidentified','uncultured','unspecified','unknown','phage','vector'] and
+    ['environmental sample','artificial sequence','other sequence'].
 
     input: path for the `names.dmp` file.
 
     output: hard-coded
-    - The `blacklist-taxId.1.csv` is generated and used as input for the 
+    - The `blacklist-taxId.1.csv` is generated and used as input for the
     `get-chiled-taxid-of-blacklist.py` script.
 
     usage: python get-parent-taxid-of-blacklist.py sort -u
         Deletes duplicated records, and store them
         into: /data/projects/targetdbs/generated/blacklist-taxId.unique.csv
 """
-import sys
+
 from argparse import ArgumentParser, SUPPRESS
 
 __version__ = "2.0"
@@ -99,7 +100,7 @@ def read_names(name, blacklist):
         for line1 in read:
             deter = False
             line = line1.strip().split("|")
-            feature_type = line[3].strip()
+            # feature_type = line[3].strip()
             feature_name1 = line[1].lower().strip().split()
             feature_name2 = line[1].lower().strip()
             class_name = ""

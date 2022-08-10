@@ -139,23 +139,22 @@ protocol: unwanted taxonomy names (scientific names) from names.dmp and all chil
 
 There are two steps for generating the black list: 
 1. get all taxonomy names with the strings above
-2. to get all child taxonomy names of them.
+2. get all child taxonomy names of them.
 
 ### 6.1 get all taxonomy names with the strings above
 
 - Navigate to the top level of the project. 
-- Run the `get-parent-taxid-of-blacklist.py` script. Default values are provided but you can specify other values if needed. 
+- Run the `parent_taxid_blacklist.py` script. Default values are provided but you can specify other values if needed. 
 
 ```
-python3 filtered_nt/get-parent-taxid-of-blacklist.py /
-    -n raw_date/taxdump/names.dmp /
+python3 filtered_nt/parent_taxid_blacklist.py \
+    -n raw_date/taxdump/names.dmp \
     -b output_data/blacklist-taxId.1.csv
 ```
 
-python3 filtered_nt/get-parent-taxid-of-blacklist.py -n raw_date/taxdump/names.dmp -b output_data/blacklist-taxId.1.csv
-scripts: 
-1. /projects/targetdbs/scripts/get-parent-taxid-of-blacklist.py
-2. /projects/targetdbs/scripts/get-child-taxid-of-blacklist.py
+### 6.2 get all child taxonomy names from blacklist-taxId.1.csv
+
+
 
 outputs: 
 1. /data/projects/targetdbs/generated/blacklist-taxId.1.csv

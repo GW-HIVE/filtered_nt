@@ -32,6 +32,7 @@ import csv
 __version__="1.0"
 __status__ = "Dev"
 
+# results = cursor.execute("SELECT nodes.taxid, names.name FROM nodes INNER JOIN names ON nodes.taxid = names.taxid AND nodes.parent_taxid=?", (taxid,),).fetchall()
 
 def getLineage(taxId, className):
 
