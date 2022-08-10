@@ -60,12 +60,17 @@ def usr_args():
         # default='./raw_date/taxdump/names.dmp'
         )
 
+    optional.add_argument('-b', '--blacklist',
+        help="Input file to use. The `blacklist-taxId.1.csv` is generated"
+        "and used as input for the `child_taxid_blacklist.py` script."
+        "Default is `./data_output/blacklist-taxId.1.csv` ",
+        default='./output_data/blacklist-taxId.1.csv')
 
-    # optional.add_argument('-b', '--blacklist',
-    #     help="Output file to create. The `blacklist-taxId.1.csv` is generated"
-    #     "and used as input for the `get-chiled-taxid-of-blacklist.py` script."
-    #     "Default is `./data_output/blacklist-taxId.1.csv` ",
-    #     default='./output_data/blacklist-taxId.1.csv')
+    optional.add_argument('-o', '--output',
+        help="Output file to create."
+        "Default is `./output_data/blacklist_children.csv` ",
+        default='./output_data/blacklist_children.csv')
+
     optional.add_argument('-v', '--version',
         action='version',
         version='%(prog)s ' + __version__)
@@ -93,44 +98,49 @@ def create_connection(db_file):
 
     return conn
 
-def get_lineage(conn, tax_id=None, class_name=None):
+def get_lineage(conn, writer, tax_id=None, class_name=None):
     """Get Lineage
     Query all rows in the tasks table
     :param conn: the Connection object
     :return: Lineage
     """
 
-    class_name = 'unclassified'
-    tax_id = '2964430'
     cur = conn.cursor()
     lineage = []
     query = f"SELECT names.taxid, names.name FROM nodes INNER JOIN names ON nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid ={tax_id};"
     cur.execute(query)
-    # rows = cur.fetchall()
-    for row in cur.fetchall():
+    rows = cur.fetchall()
+    for row in rows:
         child_tax = row[0]
         tax_name = row[1]
-        print(f"{child_tax}, {class_name}, {tax_name}")
+        writer.write(f"{child_tax}, {class_name}, {tax_name}, {tax_id}")
+        print(f"{child_tax}, {class_name}, {tax_name}, {tax_id}")
         # if child_tax != 1:
         #     get_lineage(conn, child_tax, class_name)
 
-def write_csv(blacklist, conn):
+def write_csv(blacklist, output, conn):
     """write
     """
-
+    count = 0
     with open(blacklist, 'r') as reader:
         csvreader = csv.reader(reader)
-        for row in csvreader[:10]:
-            tax_id = row[0]
-            class_name = row[1]
-            print(f"{tax_id}, {class_name}")
-            get_lineage(conn, tax_id, class_name)
+        with open(output, 'a') as writer:
+            for row in csvreader:
+                if count > 100:
+                    break
+                tax_id = row[0]
+                class_name = row[1]
+                # print(f"{tax_id}, {class_name}")
+                get_lineage(conn, writer, tax_id, class_name)
+                count += 1
 def main():
     """Main Function"""
-    blacklist = 'output_data/blacklist-taxId.1.csv'
+
     options = usr_args()
+    blacklist = options.blacklist # 'output_data/blacklist-taxId.1.csv'
+    output = options.output
     conn = create_connection(options.database)
-    write_csv(blacklist, conn)
+    write_csv(blacklist, output, conn)
     # get_lineage(conn)
 
 if __name__ == '__main__':
