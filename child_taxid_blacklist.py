@@ -118,13 +118,13 @@ def write_csv(blacklist, conn):
     """write
     """
 
-    with open(blacklist, 'rb') as reader:
-        csvreader = csv.reader(reader, delimiter=',', quotechar='|')
-        for row in csvreader:
+    with open(blacklist, 'r') as reader:
+        csvreader = csv.reader(reader)
+        for row in csvreader[:10]:
             tax_id = row[0]
             class_name = row[1]
-            print(f"{tax_id}")
-            # get_lineage(conn, tax_id, class_name)
+            print(f"{tax_id}, {class_name}")
+            get_lineage(conn, tax_id, class_name)
 def main():
     """Main Function"""
     blacklist = 'output_data/blacklist-taxId.1.csv'
