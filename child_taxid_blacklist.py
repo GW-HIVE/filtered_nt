@@ -27,6 +27,7 @@
 __version__ = "7.0"
 __status__ = "Dev"
 
+import sys
 import sqlite3
 from sqlite3 import Error
 from argparse import ArgumentParser, SUPPRESS
@@ -72,8 +73,8 @@ def usr_args():
         default=SUPPRESS,
         help='show this help message and exit')
 
-    # if len(sys.argv) <= 1:
-    #     sys.argv.append('--help')
+    if len(sys.argv) <= 1:
+        sys.argv.append('--help')
 
     return parser.parse_args()
 
@@ -109,8 +110,8 @@ def get_lineage(conn, tax_id=None, class_name=None):
         child_tax = row[0]
         tax_name = row[1]
         print(f"{child_tax}, {class_name}, {tax_name}")
-        if child_tax != 1:
-            get_lineage(child_tax, class_name)
+        # if child_tax != 1:
+        #     get_lineage(conn, child_tax, class_name)
 
 def main():
     """Main Function"""
