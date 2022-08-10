@@ -91,7 +91,7 @@ def create_connection(db_file):
 
     return conn
 
-def get_lineage(tax_id=None, class_name=None):
+def get_lineage(conn, tax_id=None, class_name=None):
     """Get Lineage
     Query all rows in the tasks table
     :param conn: the Connection object
@@ -100,7 +100,7 @@ def get_lineage(tax_id=None, class_name=None):
 
     class_name = 'unclassified'
     tax_id = '2964430'
-    cur = CONN
+    cur = conn
     lineage = []
     query = f"SELECT names.taxid, names.name FROM nodes INNER JOIN names ON nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid ={tax_id};"
     cur.execute(query)
@@ -116,8 +116,8 @@ def main():
     """Main Function"""
 
     options = usr_args()
-    CONN = create_connection(options.database)
-    get_lineage()
+    conn = create_connection(options.database)
+    get_lineage(conn)
 
 if __name__ == '__main__':
     main()
