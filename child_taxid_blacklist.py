@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
 """Get Child TaxID of BlackList
 
-    This script generates a black list of unwanted taxonomy names (scientific
-    names) from names.dmp and all child taxonomy names: ['unclassified',
-    'unidentified','uncultured','unspecified','unknown','phage','vector'] and
-    ['environmental sample','artificial sequence','other sequence'].
+usage: child_taxid_blacklist.py [-d DATABASE] [-b BLACKLIST] [-o OUTPUT] [-v]
+[-h]
 
-    Input
-    ^^^^^
-    All inputs are currently hard-coded.
-    - `database.txt`: provides utility parameters for main method.
-    - `taxIdFile`: path for the `../blacklist-taxId.1.csv` output file.
+This script generates a black list of unwanted taxonomynames (scientific names)
+from names.dmp and all child taxonomynames:['unclassified','unidentified',
+'uncultured','unspecified','unknown','phage','vector'] and ['environmental
+sample','artificial sequence','other sequence'].
 
-    Output
-    ^^^^^^
-    All outputs are currently hard-coded.
-    - The `blacklist-taxId.2.csv` is generated.
+required arguments:
+  -d DATABASE, --database DATABASE
+                        'db.sqlite3' file. Should contain
 
-    Usage
-    ^^^^^
-    - python child_taxid_blacklist.py sort -u
-        - Deletes duplicated records, and store them into:
-        /data/projects/targetdbs/generated/blacklist-taxId.unique.csv
+optional arguments:
+  -b BLACKLIST, --blacklist BLACKLIST
+                        Input file to use. The `blacklist-taxId.1.csv` is
+                        generatedand used as input for the 
+                        `child_taxid_blacklist.py` script. Default is 
+                        `./data_output/blacklist-taxId.1.csv`
+  -o OUTPUT, --output OUTPUT
+                        Output file to create.Default is 
+                        `./output_data/blacklist_children.csv`
+  -v, --version         show program's version number and exit
+  -h, --help            show this help message and exit
 """
 
 __version__ = "7.0"
@@ -62,7 +64,7 @@ def usr_args():
 
     optional.add_argument('-b', '--blacklist',
         help="Input file to use. The `blacklist-taxId.1.csv` is generated"
-        "and used as input for the `child_taxid_blacklist.py` script."
+        "and used as input for the `child_taxid_blacklist.py` script. "
         "Default is `./data_output/blacklist-taxId.1.csv` ",
         default='./output_data/blacklist-taxId.1.csv')
 
@@ -85,11 +87,21 @@ def usr_args():
     return parser.parse_args()
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by the db_file
-    :param db_file: database file
-    :return: Connection object or None
+    """Create Connection
+
+    Creates a database connection to the SQLite database
+    specified by the db_file
+
+    Parameters
+    ----------
+    db_file: str
+        file path to the database file to query.
+
+    Returns
+    -------
+        Database connection object or None
     """
+
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -100,30 +112,57 @@ def create_connection(db_file):
 
 def get_lineage(conn, writer, tax_id=None, class_name=None):
     """Get Lineage
-    Query all rows in the tasks table
-    :param conn: the Connection object
-    :return: Lineage
+
+    Using an NCBI taxonomic identifier returns any child node with class
+    name. The resulting rows are written to the output file via the supplied
+    file object.
+
+    Parameters
+    ----------
+    conn: sqlite3.Connection
+        Database connection object
+
+    writer:
+        Python file object to write results to.
+
+    tax_id: str
+        NCBI taxonomy id for query.
+
+    class_name:
+        Class name for NCBI taxonomic node in query.
+
     """
-    count = 0
+
     cur = conn.cursor()
     query = (
-       # SELECT A.taxId, B.nameTxt FROM NCBI_node A,
-        "SELECT names.taxid, names.name FROM nodes INNER JOIN names ON" \
-       # NCBI_name B WHERE A.taxId = B.taxId AND A.parentTaxId = %s
+        "SELECT names.taxid, names.name FROM nodes INNER JOIN names ON " \
         "nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid" \
         f"={tax_id};"
     )
+    print(query)
     cur.execute(query)
     rows = cur.fetchall()
     for row in rows:
         child_tax = row[0]
         tax_name = row[1]
         writer.write(f"{child_tax}, {class_name}, {tax_name}\n")
-        # print(f"{child_tax}, {class_name}, {tax_name}")
-    count += 1
+        if child_tax != 1:
+            get_lineage(conn, writer, tax_id=child_tax, class_name=class_name)
 
-def write_csv(blacklist, output, conn):
-    """write
+def write_lineage(blacklist, output, conn):
+    """Write Lineage
+
+    This function creates the file objects to handle writing rusults to file. 
+
+    Parameters
+    ----------
+    blacklist: str
+        File path for the input blacklist (input file)
+    output:
+        File path for the output blacklist (output file)
+    conn:
+        Database conncection created for the taxonomy database
+        
     """
     count = 0
 
@@ -132,12 +171,9 @@ def write_csv(blacklist, output, conn):
         with open(output, 'a', encoding='utf-8') as writer:
             writer.write("tax_id, class_name, tax_name")
             for row in csvreader:
-                if count == 10:
-                    break
                 tax_id = row[0]
                 class_name = row[1]
                 get_lineage(conn, writer, tax_id, class_name)
-                count += 1
 
 def main():
     """Main Function"""
@@ -146,7 +182,7 @@ def main():
     blacklist = options.blacklist # 'output_data/blacklist-taxId.1.csv'
     output = options.output
     conn = create_connection(options.database)
-    write_csv(blacklist, output, conn)
+    write_lineage(blacklist, output, conn)
 
 if __name__ == '__main__':
     main()
