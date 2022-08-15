@@ -107,25 +107,25 @@ def get_lineage(conn, writer, tax_id=None, class_name=None):
 
     cur = conn.cursor()
     query = (
-        "SELECT names.taxid, names.name FROM nodes INNER JOIN names ON "+\
-        "nodes.taxid WHERE nodes.taxid = names.taxid AND"+\
-        f"nodes.parent_taxid ={tax_id};"
+        "SELECT names.taxid, names.name FROM nodes INNER JOIN names ON" \
+        "nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid" \
+        f"={tax_id};"
     )
     cur.execute(query)
     rows = cur.fetchall()
     for row in rows:
         child_tax = row[0]
         tax_name = row[1]
-        writer.write(f"{child_tax}, {class_name}, {tax_name}")
+        writer.write(f"{child_tax}, {class_name}, {tax_name}\n")
         # print(f"{child_tax}, {class_name}, {tax_name}")
 
 def write_csv(blacklist, output, conn):
     """write
     """
 
-    with open(blacklist, 'r') as reader:
+    with open(blacklist, 'r', encoding='utf-8') as reader:
         csvreader = csv.reader(reader)
-        with open(output, 'a') as writer:
+        with open(output, 'a', encoding='utf-8') as writer:
             writer.write("tax_id, class_name, tax_name")
             for row in csvreader:
                 tax_id = row[0]
