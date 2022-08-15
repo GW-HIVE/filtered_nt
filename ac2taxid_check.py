@@ -8,11 +8,11 @@ are checked in all other ac2taxid files.
 
 """
 
+import sys
 from argparse import ArgumentParser, SUPPRESS
 from Bio import SeqIO
 import glob
 import csv
-
 
 __version__="7.0"
 __status__ = "Dev"
@@ -68,6 +68,7 @@ def usr_args():
     return parser.parse_args()
 
 def main():
+    """Main Function"""
 
     options = usr_args()
     print(options)
@@ -90,7 +91,7 @@ def main():
 	# 				if i%10000000 == 0:
 	# 					print("Done loading ", fileName, i)
 	# 				i += 1
-	
+
 
 	# i = 0
 	# for record in SeqIO.parse(ntFile, "fasta"):
@@ -106,5 +107,4 @@ def main():
 
 
 if __name__ == '__main__':
-        main()
-
+    main()
