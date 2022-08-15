@@ -104,10 +104,12 @@ def get_lineage(conn, writer, tax_id=None, class_name=None):
     :param conn: the Connection object
     :return: Lineage
     """
-
+    count = 0
     cur = conn.cursor()
     query = (
+       # SELECT A.taxId, B.nameTxt FROM NCBI_node A,
         "SELECT names.taxid, names.name FROM nodes INNER JOIN names ON" \
+       # NCBI_name B WHERE A.taxId = B.taxId AND A.parentTaxId = %s
         "nodes.taxid WHERE nodes.taxid = names.taxid AND nodes.parent_taxid" \
         f"={tax_id};"
     )
@@ -118,19 +120,24 @@ def get_lineage(conn, writer, tax_id=None, class_name=None):
         tax_name = row[1]
         writer.write(f"{child_tax}, {class_name}, {tax_name}\n")
         # print(f"{child_tax}, {class_name}, {tax_name}")
+    count += 1
 
 def write_csv(blacklist, output, conn):
     """write
     """
+    count = 0
 
     with open(blacklist, 'r', encoding='utf-8') as reader:
         csvreader = csv.reader(reader)
         with open(output, 'a', encoding='utf-8') as writer:
             writer.write("tax_id, class_name, tax_name")
             for row in csvreader:
+                if count == 10:
+                    break
                 tax_id = row[0]
                 class_name = row[1]
                 get_lineage(conn, writer, tax_id, class_name)
+                count += 1
 
 def main():
     """Main Function"""
