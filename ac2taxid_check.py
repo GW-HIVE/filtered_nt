@@ -8,7 +8,7 @@ are checked in all other ac2taxid files.
 
 """
 
-from optparse import OptionParser
+from argparse import ArgumentParser, SUPPRESS
 from Bio import SeqIO
 import glob
 import csv
@@ -38,21 +38,21 @@ def usr_args():
     required = parser.add_argument_group('required arguments')
     optional = parser.add_argument_group('optional arguments')
 
-    required.add_argument('-d', '--database',
-        help="'db.sqlite3' file. Should contain ",
-        # default='./raw_date/taxdump/names.dmp'
+    required.add_argument('-p', '--pathlist',
+        help="Path to `accession2taxid` directory. Should contain NCBI"
+        "accession to taxonomy files",
+        default='./output_data/accession2taxid/nucl_*.accession2taxid'
         )
 
-    optional.add_argument('-b', '--blacklist',
-        help="Input file to use. The `blacklist-taxId.1.csv` is generated"
-        "and used as input for the `child_taxid_blacklist.py` script. "
-        "Default is `./data_output/blacklist-taxId.1.csv` ",
-        default='./output_data/blacklist-taxId.1.csv')
+    required.add_argument('-n', '--nt',
+        help="Path to `nt` file.",
+        default='./raw_data/nt'
+        )
 
-    optional.add_argument('-o', '--output',
-        help="Output file to create."
+    optional.add_argument('-l', '--logfile',
+        help="Log file file to create."
         "Default is `./output_data/blacklist_children.csv` ",
-        default='./output_data/blacklist_children.csv')
+        default='./logs/logfile.accession2taxid.txt')
 
     optional.add_argument('-v', '--version',
         action='version',
@@ -69,39 +69,40 @@ def usr_args():
 
 def main():
 
+    options = usr_args()
+    print(options)
+	# patList = "/data/projects/targetdbs/filtered-nt/downloads/nucl_*.accession2taxid.2017-05-21"
 
-	patList = "/data/projects/targetdbs/filtered-nt/downloads/nucl_*.accession2taxid.2017-05-21"
+	# fileList = glob.glob(patList)
 
-	fileList = glob.glob(patList)
+	# ntFile = "/data/projects/targetdbs/filtered-nt/downloads/nt.2017-05-21"
 
-	ntFile = "/data/projects/targetdbs/filtered-nt/downloads/nt.2017-05-21"
-
-	FW = open("/data/projects/targetdbs/filtered-nt/generated/logfile.step1.txt", "w")
-	ac2taxid = {}
-	for fileName in fileList:
-		if fileName.find("nucl_gb.accession2taxid") >= 0:
-			i = 0
-			with open(fileName, 'rb') as csvfile:
-				csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
-				for row in csvreader:
-					seqAc = row[0].strip()
-					ac2taxid[seqAc] = 1
-					if i%10000000 == 0:
-						print("Done loading ", fileName, i)
-					i += 1
+	# FW = open("/data/projects/targetdbs/filtered-nt/generated/logfile.step1.txt", "w")
+	# ac2taxid = {}
+	# for fileName in fileList:
+	# 	if fileName.find("nucl_gb.accession2taxid") >= 0:
+	# 		i = 0
+	# 		with open(fileName, 'rb') as csvfile:
+	# 			csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
+	# 			for row in csvreader:
+	# 				seqAc = row[0].strip()
+	# 				ac2taxid[seqAc] = 1
+	# 				if i%10000000 == 0:
+	# 					print("Done loading ", fileName, i)
+	# 				i += 1
 	
 
-	i = 0
-	for record in SeqIO.parse(ntFile, "fasta"):
-		seqAc = record.id
-		seqAc = seqAc.split('.')[0]
-		if seqAc not in ac2taxid:
-			FW.write("No taxid found for: %s\n" % (seqAc))
-		if i%10000000 == 0:
-			print("Done parsing",  i)
-		i += 1
+	# i = 0
+	# for record in SeqIO.parse(ntFile, "fasta"):
+	# 	seqAc = record.id
+	# 	seqAc = seqAc.split('.')[0]
+	# 	if seqAc not in ac2taxid:
+	# 		FW.write("No taxid found for: %s\n" % (seqAc))
+	# 	if i%10000000 == 0:
+	# 		print("Done parsing",  i)
+	# 	i += 1
 
-	FW.close()
+	# FW.close()
 
 
 if __name__ == '__main__':
