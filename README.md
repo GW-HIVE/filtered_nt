@@ -137,9 +137,10 @@ protocol: unwanted taxonomy names (scientific names) from names.dmp and all chil
 - 'artificial sequence'
 - 'other sequence'
 
-There are two steps for generating the black list: 
+There are three steps for generating the black list: 
 1. get all taxonomy names with the strings above
 2. get all child taxonomy names of them.
+3. combine the two files and remove duplicates
 
 ### 6.1 get all taxonomy names with the strings above
 
@@ -152,25 +153,35 @@ python3 filtered_nt/parent_taxid_blacklist.py \
     -b output_data/blacklist-taxId.1.csv
 ```
 
+This will generate a file `output_data/blacklist-taxId.1.csv` that will have 11,7927 lines and be 5.4M
+
 ### 6.2 get all child taxonomy names from blacklist-taxId.1.csv
 
+- Navigate to the top level of the project. 
+- Run the `child_taxid_blacklist.py` script. Default values are provided but you can specify other values if needed. 
 
+```
+python3 git_filtered_nt/child_taxid_blacklist.py \
+    -d ncbi-taxonomy-database/taxonomy.db \
+    -b output_data/blacklist-taxId.1.csv
+```
 
-outputs: 
-1. /data/projects/targetdbs/generated/blacklist-taxId.1.csv
-2. /data/projects/targetdbs/generated/blacklist-taxId.2.csv
+This will generate a file `output_data/blacklist_children.csv` that will have 1,417,479 lines and be 58M
 
-After generating blacklist-taxId.2.txt, use command line 
-"sort -u" to delete duplicated records, and store them into:
-/data/projects/targetdbs/generated/blacklist-taxId.unique.csv
+### 6.3 combine the two files and remove duplicates
 
-QC script: /projects/targetdbs/scripts/compare-old-new-blacklist.py
-		Compare the newly generated with the older version.
+After generating `output_data/blacklist_children.csv` use the command line 
+"sort -u" to delete duplicated records, and store them in
+`output_data/blacklist_unique.csv`
 
+``` shell
+    sort -u output_data/blacklist-taxId.1.csv output_data/blacklist_children.csv > output_data/blacklist_unique.csv
+```
 
-************************************************************************
-## Step 4. Check the completion of taxonomy list (QC)
-************************************************************************
+This will create a new file that is 1,530,156 lines and 74M
+
+## Step 7. Check the completion of taxonomy list (QC)
+
 protocol: First check if all seqAcs in nt file have taxIds from 
 	nucl_gb.accession2taxid file, and the ones do not have taxIds
 	are checked in all other ac2taxid files.

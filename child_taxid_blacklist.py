@@ -16,11 +16,11 @@ required arguments:
 optional arguments:
   -b BLACKLIST, --blacklist BLACKLIST
                         Input file to use. The `blacklist-taxId.1.csv` is
-                        generatedand used as input for the 
-                        `child_taxid_blacklist.py` script. Default is 
+                        generatedand used as input for the
+                        `child_taxid_blacklist.py` script. Default is
                         `./data_output/blacklist-taxId.1.csv`
   -o OUTPUT, --output OUTPUT
-                        Output file to create.Default is 
+                        Output file to create.Default is
                         `./output_data/blacklist_children.csv`
   -v, --version         show program's version number and exit
   -h, --help            show this help message and exit
@@ -152,7 +152,7 @@ def get_lineage(conn, writer, tax_id=None, class_name=None):
 def write_lineage(blacklist, output, conn):
     """Write Lineage
 
-    This function creates the file objects to handle writing rusults to file. 
+    This function creates the file objects to handle writing rusults to file.
 
     Parameters
     ----------
@@ -162,9 +162,8 @@ def write_lineage(blacklist, output, conn):
         File path for the output blacklist (output file)
     conn:
         Database conncection created for the taxonomy database
-        
+
     """
-    count = 0
 
     with open(blacklist, 'r', encoding='utf-8') as reader:
         csvreader = csv.reader(reader)
