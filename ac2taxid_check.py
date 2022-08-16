@@ -8,14 +8,10 @@ are checked in all other ac2taxid files.
 
 """
 
-import sys
-from argparse import ArgumentParser, SUPPRESS
-from Bio import SeqIO
-import glob
-import csv
-import os
 import sqlite3
 from sqlite3 import Error
+from argparse import ArgumentParser, SUPPRESS
+from Bio import SeqIO
 
 __version__="7.0"
 __status__ = "Dev"
@@ -35,7 +31,7 @@ def usr_args():
         prog='ac2taxid_check.py',
         description="This script is the first of three scripts that checks if"
         "all seqAcs in nt file have taxIds from nucl_gb.accession2taxid file,"
-        " and the ones do not have taxIds are checked in all other ac2taxid" 
+        " and the ones do not have taxIds are checked in all other ac2taxid"
         "files.")
 
     required = parser.add_argument_group('required arguments')
@@ -82,6 +78,7 @@ def create_connection(db_file):
 
     Returns
     -------
+    conn: sqlite3 db connection
         Database connection object or None
     """
 
@@ -94,7 +91,24 @@ def create_connection(db_file):
     return conn
 
 def get_taxonomy(conn, accession):
-    """get the taxonomy"""
+    """Get Taxonomy
+
+    Using the supplied taxonomy DB this function will check that there is a
+    taxonomy ID for the associated accession.
+
+    Parameters
+    ----------
+    conn: sqlite3 db connection
+        Database connection object or None
+    accession: str
+        NCBI accession as string
+
+    Returns
+    -------
+    row: tup
+        A tuple object containing the accession and the taxonomy id OR a string
+        indicating nothing was found in the DB.
+    """
 
     cursor = conn.cursor()
     query = ("select * from accession_taxid where accession = ?")
@@ -102,26 +116,38 @@ def get_taxonomy(conn, accession):
     row = cursor.fetchone()
     if row is None:
         return 'not found'
-    else:
-        return row
 
-def check_nt(conn, nt):
-    """
+    return row
+
+def check_nt(conn, nt, logfile):
+    """Chcek NT
+
+    Parameters
+    ----------
+    conn: sqlite3 db connection
+        Database connection object or None
+    nt: str
+        File path to the version of nt to be checked. 
+
+    Results
+    -------
     """
 
     for record in SeqIO.parse(nt, "fasta"):
         accession = record.id
         # accession = accession.split('.')[0]
-        if get_taxonomy(conn, accession) == 'not found':
+        result = get_taxonomy(conn, accession)
+        if result == 'not found':
+            with open(logfile, 'a', encoding='utf-8') as logfile:
+                logfile.write(f'{accession}\n')
             print(f'No taxid found for: {accession}')
-        else:
-            print(f'GOT EM: {accession}, {get_taxonomy}')
 
 def main():
     """Main Function"""
 
     options = usr_args()
-    print(options)            
+    conn = create_connection(options.database)
+    check_nt(conn, options.nt, options.logfile)
 
 
 if __name__ == '__main__':
