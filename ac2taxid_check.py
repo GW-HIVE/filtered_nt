@@ -8,6 +8,7 @@ are checked in all other ac2taxid files.
 
 """
 
+import sys
 import sqlite3
 from sqlite3 import Error
 from argparse import ArgumentParser, SUPPRESS
@@ -60,8 +61,8 @@ def usr_args():
         default=SUPPRESS,
         help='show this help message and exit')
 
-#    if len(sys.argv) <= 1:
-#        sys.argv.append('--help')
+    if len(sys.argv) <= 1:
+        sys.argv.append('--help')
 
     return parser.parse_args()
 
@@ -138,8 +139,8 @@ def check_nt(conn, nt, logfile):
         # accession = accession.split('.')[0]
         result = get_taxonomy(conn, accession)
         if result == 'not found':
-            with open(logfile, 'a', encoding='utf-8') as logfile:
-                logfile.write(f'{accession}\n')
+            with open(logfile, 'a', encoding='utf-8') as log:
+                log.write(f'{accession}\n')
             print(f'No taxid found for: {accession}')
 
 def main():

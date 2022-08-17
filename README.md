@@ -182,7 +182,15 @@ This will create a new file that is 1,530,156 lines and 74M
 
 ## Step 7. Check the completion of taxonomy list (QC)
 
-protocol: First check if all seqAcs in nt file have taxIds from 
+For this step you will check if all sequences access in nt file have taxonomy ids in the taxonomy DB. It is reccomended to run this step in the background (using `nohup` and `&`) so that if you loose your connection the process will not stop.
+
+``` shell
+nohup python3 git_filtered_nt/ac2taxid_check.py \
+    -d ncbi-taxonomy-database/taxonomy.db -n raw_data/nt \
+    -l logs/logfile.accession2taxid.txt & 
+```
+For version 7 this process took 14 hours and the resulting log file contained 92,306 accessions. 
+
 	nucl_gb.accession2taxid file, and the ones do not have taxIds
 	are checked in all other ac2taxid files.
 script: /projects/targetdbs/scripts/check-ac2taxid-completion-step1.py
