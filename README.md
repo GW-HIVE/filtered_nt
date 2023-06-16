@@ -25,26 +25,25 @@ Unsupported License to this version of the software.
 
 ## Step 1. Clone this repo
 
-Choose a location for the project. You will need over 500 GB of storage for just the downloads.
+Choose a location for the project. You will need over 500 GB of storage for just the downloads. You should name it something unique (mybe include the date) so that you can revisit the raw files if needed. 
 
-`git clone https://github.com/GW-HIVE/filtered_nt.git`
+`git clone https://github.com/GW-HIVE/filtered_nt.git <TODAY>_filtered_nt` 
 
-## Step 2. Create a project folder
+## Step 2. Create project subfolders
 
-Create a new directory at the same level as the `filtered_nt` (github code) directory. You should name it something unique (mybe include the date) so that you can revisit the raw files if needed. 
+Create two new directories at the top level of the project (github code) directory: `output_data` and `raw_data`
 
 ```shell
-> $ mkdir filtered_nt_27_07_2022
+> $ mkdir output_data raw_data
 > $ ll
-drwxrwxr-x. 5 username grpname           87 Jul 27 16:06 filtered_nt_27_07_2022
-drwxrwxr-x. 4 username grpname         4096 Jul 29 11:14 filtered_nt_git
+drwxrwxr-x. 5 username grpname           87 Jul 27 16:06 output_data
+drwxrwxr-x. 4 username grpname         4096 Jul 29 11:14 raw_data
 ```
 
 ## Step 3. Download and uncompress the whole nt file
 
 At the time of this writing the `nt.gz` was 197G and the uncompressed `nt` file expanded to 791G. The download took about an hour and a half and uncompressing it took about two and a half hours. *USE CARE!* 
 
-- Navigate to the project folder and create two more directories: `output_data` and `raw_data`
 - Navigate to `raw_data`
 - Download NT:
 
@@ -91,29 +90,14 @@ command:
 This step is taken from https://github.com/acorg/ncbi-taxonomy-database
 
 - Navigate to the top level of this project
-- Clone the `ncbi-taxonomy-database` repo:
-
-```
-git clone https://github.com/acorg/ncbi-taxonomy-database.git
-```
-
-Your project folder should look like this now:
-
-```shell
-> $ ll
-drwxrwxr-x. 2 username grpname   10 Jul 27 14:26 output_data
-drwxrwxr-x. 5 username grpname 4096 Jul 27 16:53 ncbi-taxonomy-database
-drwxrwxr-x. 4 username grpname   90 Jul 27 17:00 raw_data
-```
-
-- Copy the requisite files into the `ncbi-taxonomy-database` repo:
+- Navigate in to the `ncbi-taxonomy-database` directory and run `make`
 
 ```
 cp raw_data/taxdump/*.dmp ncbi-taxonomy-database/data/.
 cp raw_data/accession2taxid/nucl_gb.accession2taxid.gz ncbi-taxonomy-database/data/.
 ```
 
-- Navigate in to the `ncbi-taxonomy-database` directory and run `make`
+
 
 ```
 cd ncbi-taxonomy-database/
