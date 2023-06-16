@@ -1,0 +1,61 @@
+accession_taxid  names            nodes          
+sqlite> select * from names LIMIT 10;
+taxid|name
+1|root
+2|Bacteria <bacteria>
+6|Azorhizobium
+7|Azorhizobium caulinodans
+9|Buchnera aphidicola
+10|Cellvibrio
+11|Cellulomonas gilvus
+13|Dictyoglomus
+14|Dictyoglomus thermophilum
+16|Methylophilus
+
+sqlite> select * from nodes LIMIT 10;
+taxid|parent_taxid|rank
+1|1|-
+2|131567|superkingdom
+6|335928|genus
+7|6|species
+9|32199|species
+10|1706371|genus
+11|1707|species
+13|203488|genus
+14|13|species
+16|32011|genus
+
+sqlite> select * from accession_taxid LIMIT 10;
+accession|taxid
+A00001.1|10641
+A00002.1|9913
+A00003.1|9913
+A00004.1|32630
+A00005.1|32630
+A00006.1|32630
+A00008.1|32630
+A00009.1|32630
+A00010.1|32630
+A00011.1|32630
+
+A.taxId NCBI_node
+B.nameTxt NCBI_name
+WHERE
+A.taxId = B.taxId
+AND NCBI_node.parentTaxId = taxid
+
+
+6965 ../output_data/child_test.csv
+
+wc -l blacklist_2
+	7346421
+
+
+10:41 hadley_king@hive1-node1 ~ $ nohup python3 git_filtered_nt/ac2taxid_check.py -d ncbi-taxonomy-database/taxonomy.db -n raw_data/nt -l logs/logfile.accession2taxid.txt & 
+ps ax | grep 'ac2taxid_check.py'
+
+accession|taxid|name|parent_taxid|rank
+
+https://ncbi-hackathons.github.io/EDirectCookbook/
+
+cat logs/logfile.accession2taxid_test.txt | epost -db nuccore -format acc | elink -target taxonomy | efetch -format xml | xtract -pattern Taxon -element TaxId, ScientificName, Rank, Lineage
