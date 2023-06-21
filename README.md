@@ -28,68 +28,131 @@ Unsupported License to this version of the software.
 # Summary of the protocols
 
 ************************************************************************
+## Step 0. Set up the local repo
+************************************************************************
+Clone these repos and add data directories:
+
+	git clone https://github.com/GW-HIVE/filtered_nt.git
+	git clone https://github.com/acorg/ncbi-taxonomy-database
+	cd filtered_nt
+	mkdir raw_data
+	mkdir output_data
+	mkdir logfiles
+
+Create and activate virtual environment:
+
+	python -m venv env
+	. env/bin/activate
+	python -m pip install requirements.txt
+
+************************************************************************
 ## Step 1. Download the whole nt file
 ************************************************************************
 downloaded from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
-version: 5/21/2017
+
+version: 2023-05-16
+
 command:
+
+	cd raw_data
     wget ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
-    gunzip nt.gz (42,439,338 rows)
+    gunzip nt.gz (14,384,694,720 rows)
 
 ************************************************************************
 ## Step 2. Download the taxonomy list 
 ************************************************************************
 downloaded from: ftp://ftp.ncbi.nih.gov/pub/taxonomy/
-version: 5/21/2017; 5/30/2017
-command:
+
+accession2taxid version: 2023-06-19
+
+commands:
+
+	mkdir accession2taxid
+	cd accession2taxid
 	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/*.gz
 	gunzip *.gz
-	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
-	gunzip taxdump.tar.gz |tar -xvf
-location: /data/projects/targetdbs/downloads/
+
+************************************************************************
+## Step 3. Create Taxonomy DB 
+************************************************************************
+Hat tip to https://github.com/acorg/ncbi-taxonomy-database
+
+taxdump version: 2023-06-20
+
+commands:
+
+	mkdir taxdump
+	cd taxdump
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz'
+	tar xfz new_taxdump.tar.gz
+	cp ../accession2taxid/nucl_gb.accession2taxid.gz .
+
+The extra copy of `nucl_gb.accession2taxid.gz` makes it easier to build the
+taxonomy DB
+
+	cd ../../ncbi-taxonomy-database
+
+Modify the `Makefile`:
+
+	TAXONOMY_DIR := ../filtered_nt/raw_data/new_taxdump
+	DB = taxonomy.db
 
 
 ************************************************************************
-## Step 3. Generate black list
+## Step 4. Generate black list
 ************************************************************************
-protocol: unwanted taxonomy names (scientific names) from names.dmp and
-		all child taxonomy names of them, include:
-		['unclassified','unidentified','uncultured', \
-			 'unspecified','unknown','phage','vector']
-		['environmental sample','artificial sequence','other sequence']
+Unwanted taxonomy names (scientific names) from names.dmp and all child
+taxonomy names of them, include:
 
-	  There are two steps for generating the black list, first is to
-		get all taxonomy names with the strings above, and then
-		to get all child taxonomy names of them.
+		['unclassified','unidentified','uncultured', 'unspecified','unknown',
+		'phage','vector', 'environmental sample','artificial sequence',
+		'other sequence']
 
-script: /projects/targetdbs/scripts/get-parent-taxid-of-blacklist.py
-	/projects/targetdbs/scripts/get-child-taxid-of-blacklist.py
+There are two scripts for generating the black list. The first will get all taxonomy names with the strings above. The second will get all child taxonomy names of those terms above.
 
-output: /data/projects/targetdbs/generated/blacklist-taxId.1.csv
-	/data/projects/targetdbs/generated/blacklist-taxId.2.csv
+ - script 1: `parent_taxid_blacklist.py`
+	
+	default output: `./output_data/blacklist-taxId.1.csv`
+	
+ - script 2: `child_taxid_blacklist.py`
+	
+	default output: `./output_data/blacklist_children.csv`
 
-	After generating blacklist-taxId.2.txt, use command line 
-	"sort -u" to delete duplicated records, and store them into:
-	/data/projects/targetdbs/generated/blacklist-taxId.unique.csv
+After generating `blacklist_children.csv`, use command line "sort -u" to delete duplicated records, and store the results in a duplicate file:
 
-QC script: /projects/targetdbs/scripts/compare-old-new-blacklist.py
-		Compare the newly generated with the older version.
+	sort -u blacklist_children.csv > blacklist_children_unique.csv
+
+QC step: Compare the newly generated file with the original version.
+
+	wc -l blacklist_children_unique.csv
+		1452016 blacklist_children_unique.csv
+
+	wc -l blacklist_children.csv 
+		1457194 blacklist_children.csv
 
 
 ************************************************************************
-## Step 4. Check the completion of taxonomy list (QC)
+## Step 5. Check the completion of taxonomy list (QC)
 ************************************************************************
-protocol: First check if all seqAcs in nt file have taxIds from 
-	nucl_gb.accession2taxid file, and the ones do not have taxIds
-	are checked in all other ac2taxid files.
-script: /projects/targetdbs/scripts/check-ac2taxid-completion-step1.py
+First check if all seqAcs in nt file have taxIds from 
+nucl_gb.accession2taxid file, and the ones do not have taxIds are checked
+in all other ac2taxid files.
+
+
+ - script 1: `ac2taxid_check.py`
+
+	default output: `./logfiles/accession2taxid_log.txt`
+ 
+ - script 2:  `check-ac2taxid-completion-step2.py`
+
 	/projects/targetdbs/scripts/check-ac2taxid-completion-step2.py
 	/projects/targetdbs/scripts/check-ac2taxid-completion-step3.py
+
 output: /data/projects/targetdbs/generated/logfile.step1.txt
 	/data/projects/targetdbs/generated/logfile.step2.txt
 	/data/projects/targetdbs/generated/logfile.step3.txt
 
-This step needs a lot of memory. Suggest to run on large machine. 
+
         123 records of PDB accessions have extra characters, fixed 
 	that in step3.py.
 	However, 28 records are not in the files, search taxIds
