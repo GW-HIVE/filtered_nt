@@ -48,15 +48,15 @@ Create and activate virtual environment:
 ************************************************************************
 ## Step 1. Download the whole nt file
 ************************************************************************
+This is a very large file. It will take a long time.
+
 downloaded from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
 
-version: 2023-05-16
-
-command:
+commands:
 
 	cd raw_data
     wget ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
-    gunzip nt.gz (14,384,694,720 rows)
+    gunzip nt.gz
 
 ************************************************************************
 ## Step 2. Download the taxonomy list 
