@@ -3,7 +3,7 @@
 ************************************************************************
 ## Files Downloaded 
 
-### 1. nt file downloaded on 2023-05-16 
+### 1. `nt` file downloaded on 2023-05-16 
 
 ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
 
@@ -15,34 +15,41 @@ nt    | 2023-05-16 12:01 | 1.1T
 	14,384,694,720 	sequences
 
 
-2. names.dump downloaded on 5/21/2017 
-   ftp://ftp.ncbi.nih.gov/pub/taxonomy/
+### 2. `new_taxdump` downloaded on 2023-05-16 
+   ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump
 
 	2,383,434 	names
 	1,601,859 	scientific names
 
 
-### 3. ac2taxid files 
-   ftp://ftp.ncbi.nih.gov/pub/taxonomy/
+### 3. `ac2taxid` downloaded on 2023-05-16
+   ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/
 
-records	    | file name
-------------|----------------------------------
-39,775,235	| nucl_gss.accession2taxid.2017-05-21
-122,045,527	| nucl_gb.accession2taxid.2017-05-21
-76,436,508	| nucl_est.accession2taxid.2017-05-21
-361,700,039	| nucl_wgs.accession2taxid.2017-05-21
-12,406,761	| ac2taxid.2017-05-30/dead_nucl.accession2taxid
-39,775,235	| ac2taxid.2017-05-30/nucl_gss.accession2taxid
-122,236,860	| ac2taxid.2017-05-30/nucl_gb.accession2taxid
-76,436,632	| ac2taxid.2017-05-30/nucl_est.accession2taxid
-66,696,868	| ac2taxid.2017-05-30/dead_wgs.accession2taxid
-381,019		| ac2taxid.2017-05-30/pdb.accession2taxid
-362,474,815	| ac2taxid.2017-05-30/nucl_wgs.accession2taxid
-
+records	      | file name                         | file size (compressed)
+--------------|-----------------------------------|------------------------
+107,821,989	  | dead_wgs.accession2taxid.gz       | 749 M
+39,408,003	  | dead_nucl.accession2taxid.gz      | 282 M
+146,110,304   | dead_prot.accession2taxid.gz      | 1.1 G
+330,564	      | nucl_wgs.accession2taxid.EXTRA.gz | 1.6 M
+656,650,780	  | nucl_wgs.accession2taxid.gz       | 4.5 G
+315,533,471	  | nucl_gb.accession2taxid.gz        | 2.2 G
+802,469	      | pdb.accession2taxid.gz            | 5.4 M
+5,242,814,608 | prot.accession2taxid.gz           | 13  G
 
 ************************************************************************
-* Filter statistics
+## Database Statistics 
+
+Database            | file size  | records in accession_taxid
+--------------------|------------|----------------------------
+protein_taxonomy.db | 365 G      | 5,242,861,403
+no_ver_protein.db   |     G      | 
+taxonomy.db         | 71 G       | 972,514,757
+no_acc_taxonomy.db  |    G       | 
+dead_taxonomy.db    | 20 G       | 293,340,296
+
 ************************************************************************
+## Filter statistics
+
 Number of taxonomy ids that are in black list is 378,341.
 
 Sequences from a given black list of sources were removed. This list

@@ -30,9 +30,8 @@ Unsupported License to this version of the software.
 ************************************************************************
 ## Step 0. Set up the local repo
 ************************************************************************
-Clone these repos and add data directories:
+Clone the repo and add data directories:
 
-	git clone https://github.com/GW-HIVE/filtered_nt.git
 	git clone https://github.com/acorg/ncbi-taxonomy-database
 	cd filtered_nt
 	mkdir raw_data
@@ -69,8 +68,14 @@ commands:
 
 	mkdir accession2taxid
 	cd accession2taxid
-	wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/*.gz
-	gunzip *.gz
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/dead_nucl.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/dead_prot.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/dead_wgs.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/nucl_wgs.accession2taxid.EXTRA.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/nucl_wgs.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/pdb.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz'
 
 ************************************************************************
 ## Step 3. Create Taxonomy DB 
@@ -85,30 +90,35 @@ commands:
 	cd taxdump
 	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz'
 	tar xfz new_taxdump.tar.gz
-	cp ../accession2taxid/nucl_gb.accession2taxid.gz .
 
-The extra copy of `nucl_gb.accession2taxid.gz` makes it easier to build the
-taxonomy DB
+There is a `Makefile` in the repo root. This is for constructing the
+taxonomy-accession DBs that we will use later on. Each of the DBs will take a
+significant amount of time to build so be patient. 
 
-	cd ../../ncbi-taxonomy-database
+a) To create the `taxonomy.db` file run:
 
-Modify the `Makefile`:
+	make nucleotide
 
-	TAXONOMY_DIR := ../filtered_nt/raw_data/new_taxdump
-	DB = taxonomy.db
+b) To create the `dead_taxonomy.db` file run:
+
+	make dead
+
+c) To create the `protein_taxonomy.db` file run:
+
+	make proteiin
 
 
 ************************************************************************
 ## Step 4. Generate black list
 ************************************************************************
-Unwanted taxonomy names (scientific names) from names.dmp and all child
-taxonomy names of them, include:
+There are two scripts for generating the black list. The first will get all taxonomy names with the strings above. The second will get all child taxonomy names of those terms above.
+Unwanted taxonomy names (scientific names) from names.dmp include:
 
 		['unclassified','unidentified','uncultured', 'unspecified','unknown',
 		'phage','vector', 'environmental sample','artificial sequence',
 		'other sequence']
 
-There are two scripts for generating the black list. The first will get all taxonomy names with the strings above. The second will get all child taxonomy names of those terms above.
+
 
  - script 1: `parent_taxid_blacklist.py`
 	
