@@ -59,3 +59,28 @@ accession|taxid|name|parent_taxid|rank
 https://ncbi-hackathons.github.io/EDirectCookbook/
 
 cat logs/logfile.accession2taxid_test.txt | epost -db nuccore -format acc | elink -target taxonomy | efetch -format xml | xtract -pattern Taxon -element TaxId, ScientificName, Rank, Lineage
+
+
+
+
+#______________________________________________________________________________#
+   Monday    06-26-23
+   
+   1,512,606
+   1,576,990
+   
+   656650780
+   656981344
+   
+   make nucleotide
+330564 /tmp/tmp.UqzDSlVl2g
+656981344 /tmp/tmp.UqzDSlVl2g
+972514815 /tmp/tmp.UqzDSlVl2g
+
+
+330564 /tmp/tmp.YJcTZpo3kb
+656981344 /tmp/tmp.YJcTZpo3kb
+972,514,815 /tmp/tmp.YJcTZpo3kb
+972,514,757 /tmp/tmp.kb7bmdsyZl
+
+PID: 2784320

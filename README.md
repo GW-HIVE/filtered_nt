@@ -32,7 +32,7 @@ Unsupported License to this version of the software.
 ************************************************************************
 Clone the repo and add data directories:
 
-	git clone https://github.com/acorg/ncbi-taxonomy-database
+	git clone https://github.com/GW-HIVE/filtered_nt.git
 	cd filtered_nt
 	mkdir raw_data
 	mkdir output_data
@@ -144,50 +144,20 @@ QC step: Compare the newly generated file with the original version.
 ************************************************************************
 ## Step 5. Check the completion of taxonomy list (QC)
 ************************************************************************
-First check if all seqAcs in nt file have taxIds from 
-nucl_gb.accession2taxid file, and the ones do not have taxIds are checked
-in all other ac2taxid files.
+We need to check if all accessions in the `nt` file have a taxId associated
+with it from our DBs. If you find any you will need to trouble shoot those.
 
 
- - script 1: `ac2taxid_check.py`
+ - script: `ac2taxid_check.py`
 
 	default output: `./logfiles/accession2taxid_log.txt`
- 
- - script 2:  `check-ac2taxid-completion-step2.py`
 
-	/projects/targetdbs/scripts/check-ac2taxid-completion-step2.py
-	/projects/targetdbs/scripts/check-ac2taxid-completion-step3.py
-
-output: /data/projects/targetdbs/generated/logfile.step1.txt
-	/data/projects/targetdbs/generated/logfile.step2.txt
-	/data/projects/targetdbs/generated/logfile.step3.txt
-
-
-        123 records of PDB accessions have extra characters, fixed 
-	that in step3.py.
-	However, 28 records are not in the files, search taxIds
-	manually for them (/data/projects/targetdbs/generated/ \
-	logfile.step3.manually.added.txt).
-
-
-************************************************************************
-## Step 5. Get the seqAc-taxonomy list
-************************************************************************
-protocol: Exclude those taxIds in the blacklist. And first get all 
-	seqAc-taxIds from nucl_gb.accession2taxid, and all of other
-	ac2taxid files from both version 05/21/2017 and 05/30/2017.
-script: /projects/targetdbs/scripts/get-seqac2taxid.py
-output: /data/projects/targetdbs/generated/logfile.ac2taxid.list.txt
-QC step: All seqAcs in nt files are mapped to at least one taxId. The
-	number of seqAcs in the list matches the one in nt file.
-	SeqAcs with multiple taxIds are listed in:
-	/data/projects/targetdbs/generated/seqAc-with-multiple-taxids.txt
-
+The output file `accession2taxid_log.txt` should be empty. If not you will
+have to trouble shoot.
 
 ************************************************************************
 ## Step 6. Filtering nt file
 ************************************************************************
-protocol: Remember to add those manually added ac2taxids.
-script: /projects/targetdbs/scripts/filter-nt.py
-output: /data/projects/targetdbs/generated/filtered_nt_Jun06-2017.fasta
-QC script: /projects/targetdbs/scripts/check-removed-seqacs-count.py
+protocol: 
+
+ - script: `filter-nt.py`
