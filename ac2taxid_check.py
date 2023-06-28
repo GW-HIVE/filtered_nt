@@ -4,8 +4,6 @@
 This script is the first of three scripts that checks if all seqAcs in nt file
 have taxIds from nucl_gb.accession2taxid file, and the ones do not have taxIds
 are checked in all other ac2taxid files.
-
-
 """
 
 import sys
@@ -39,8 +37,8 @@ def usr_args():
     optional = parser.add_argument_group('optional arguments')
 
     required.add_argument('-d', '--database',
-        help="'db.sqlite3' file. Should contain ",
-        # default='./raw_date/taxdump/names.dmp'
+        help="'db.sqlite3' files. Should contain path to DB files",
+        default='./output_data'
         )
 
     required.add_argument('-n', '--nt',
@@ -50,8 +48,8 @@ def usr_args():
 
     optional.add_argument('-l', '--logfile',
         help="Log file file to create."
-        "Default is `./output_data/blacklist_children.csv` ",
-        default='./logs/logfile.accession2taxid.txt')
+        "Default is `./logfiles/accession2taxid_log.txt` ",
+        default='./logfiles/accession2taxid_log.txt')
 
     optional.add_argument('-v', '--version',
         action='version',
@@ -83,13 +81,25 @@ def create_connection(db_file):
         Database connection object or None
     """
 
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-    except Error as error:
-        print(error)
+    # protein_conn, dead_conn, taxonomy_conn = None, None, None
+    print(db_file)
 
-    return conn
+    try:
+        protein_conn = sqlite3.connect(f'{db_file}/protein_taxonomy.db')
+    except Error as error:
+        raise error
+    
+    try:
+        dead_conn = sqlite3.connect(f'{db_file}/dead_taxonomy.db')
+    except Error as error:
+        raise error
+
+    try:
+        taxonomy_conn = sqlite3.connect(f'{db_file}/taxonomy.db')
+    except Error as error:
+        raise error
+
+    return protein_conn, dead_conn, taxonomy_conn
 
 def get_taxonomy(conn, accession):
     """Get Taxonomy
@@ -120,7 +130,7 @@ def get_taxonomy(conn, accession):
 
     return row
 
-def check_nt(conn, nt, logfile):
+def check_nt(protein_conn, dead_conn, taxonomy_conn, nt, logfile):
     """Chcek NT
 
     Parameters
@@ -134,21 +144,25 @@ def check_nt(conn, nt, logfile):
     -------
     """
 
-    for record in SeqIO.parse(nt, "fasta"):
-        accession = record.id
-        # accession = accession.split('.')[0]
-        result = get_taxonomy(conn, accession)
-        if result == 'not found':
-            with open(logfile, 'a', encoding='utf-8') as log:
-                log.write(f'{accession}\n')
-            print(f'No taxid found for: {accession}')
+    with open(logfile, 'a', encoding='utf-8') as log:
+        for record in SeqIO.parse(nt, "fasta"):
+            accession = record.id.split('.')[0]
+            tax_result = get_taxonomy(taxonomy_conn, accession)
+            if tax_result == 'not found':
+                prot_result = get_taxonomy(protein_conn, accession)
+                if prot_result == 'not found':
+                    dead_result = get_taxonomy(dead_conn, accession)
+                    if dead_result == 'not found':
+                        log.write(f'{accession}\n')
+                        print(f'No taxid found for: {accession}')
+        log.write('\n')
 
 def main():
     """Main Function"""
 
     options = usr_args()
-    conn = create_connection(options.database)
-    check_nt(conn, options.nt, options.logfile)
+    protein_conn, dead_conn, taxonomy_conn = create_connection(options.database)
+    check_nt(protein_conn, dead_conn, taxonomy_conn, options.nt, options.logfile)
 
 
 if __name__ == '__main__':
