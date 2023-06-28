@@ -42,20 +42,17 @@ records	      | file name                         | file size (compressed)
 Database            | file size  | records in accession_taxid
 --------------------|------------|----------------------------
 protein_taxonomy.db | 365 G      | 5,242,861,403
-no_ver_protein.db   |     G      | 
-taxonomy.db         | 71 G       | 972,514,757
-no_acc_taxonomy.db  |    G       | 
+taxonomy.db         | 65 G       | 972,514,757
 dead_taxonomy.db    | 20 G       | 293,340,296
 
 ************************************************************************
 ## Filter statistics
 
-Number of taxonomy ids that are in black list is 378,341.
+Number of taxonomy ids that are in black list is 1,452,016.
 
 Sequences from a given black list of sources were removed. This list
 of sources, number of associated taxonomic IDs and number 
 of removed sequences is given below.
-
 
 blackListTaxonomyName | taxids | removed sequences
 ----------------------|--------|-------------------
