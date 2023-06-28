@@ -6,17 +6,8 @@
     'unidentified','uncultured','unspecified','unknown','phage','vector'] and
     ['environmental sample','artificial sequence','other sequence'].
 
-    input: path for the `names.dmp` file.
-
-    output: hard-coded
-    - The `blacklist-taxId.1.csv` is generated and used as input for the
-    `get-chiled-taxid-of-blacklist.py` script.
-
-    usage: python parent_taxid_blacklist.py sort -u
-        Deletes duplicated records, and store them
-        into: /data/projects/targetdbs/generated/blacklist-taxId.unique.csv
 """
-
+import sys
 from argparse import ArgumentParser, SUPPRESS
 
 __version__ = "7.0"
@@ -47,14 +38,13 @@ def usr_args():
     required.add_argument('-n', '--name',
         help="'names.dmp' file. Should contain taxonomy names (scientific"
         " names) from NCBI. Default is `./data_raw/taxdump/names.dmp`",
-        default='./raw_date/taxdump/names.dmp')
-
-
+        default='./raw_data/taxdump/names.dmp')
     optional.add_argument('-b', '--blacklist',
         help="Output file to create. The `blacklist-taxId.1.csv` is generated"
         "and used as input for the `get-chiled-taxid-of-blacklist.py` script."
         "Default is `./data_output/blacklist-taxId.1.csv` ",
         default='./output_data/blacklist-taxId.1.csv')
+
     optional.add_argument('-v', '--version',
         action='version',
         version='%(prog)s ' + __version__)
@@ -63,15 +53,13 @@ def usr_args():
         default=SUPPRESS,
         help='show this help message and exit')
 
-    # if len(sys.argv) <= 1:
-    #     sys.argv.append('--help')
+    if len(sys.argv) <= 1:
+        sys.argv.append('--help')
 
     return parser.parse_args()
 
 def read_names(name, blacklist):
     """Read Names
-
-
 
     Parameters
     ----------
@@ -100,7 +88,6 @@ def read_names(name, blacklist):
         for line1 in read:
             deter = False
             line = line1.strip().split("|")
-            # feature_type = line[3].strip()
             feature_name1 = line[1].lower().strip().split()
             feature_name2 = line[1].lower().strip()
             class_name = ""
@@ -116,7 +103,6 @@ def read_names(name, blacklist):
                     deter = True
                     class_name += i + ";"
             if deter:
-                # import pdb; pdb.set_trace()
                 with open(blacklist, "a", encoding='utf-8') as write:
                     write.write(
                         line[0].strip()

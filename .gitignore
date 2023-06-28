@@ -1,6 +1,8 @@
 .vscode/
 .DS_Store
 data/*
-data_output/*
-data_raw/*
+output_data/*
+raw_data/*
+logfiles/*
 env/*
+nohup.out

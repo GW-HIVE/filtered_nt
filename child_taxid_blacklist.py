@@ -65,7 +65,7 @@ def usr_args():
     optional.add_argument('-b', '--blacklist',
         help="Input file to use. The `blacklist-taxId.1.csv` is generated"
         "and used as input for the `child_taxid_blacklist.py` script. "
-        "Default is `./data_output/blacklist-taxId.1.csv` ",
+        "Default is `./output_data/blacklist-taxId.1.csv` ",
         default='./output_data/blacklist-taxId.1.csv')
 
     optional.add_argument('-o', '--output',
@@ -168,7 +168,7 @@ def write_lineage(blacklist, output, conn):
     with open(blacklist, 'r', encoding='utf-8') as reader:
         csvreader = csv.reader(reader)
         with open(output, 'a', encoding='utf-8') as writer:
-            writer.write("tax_id, class_name, tax_name")
+            writer.write("tax_id, class_name, tax_name\n")
             for row in csvreader:
                 tax_id = row[0]
                 class_name = row[1]
@@ -178,7 +178,7 @@ def main():
     """Main Function"""
 
     options = usr_args()
-    blacklist = options.blacklist # 'output_data/blacklist-taxId.1.csv'
+    blacklist = options.blacklist
     output = options.output
     conn = create_connection(options.database)
     write_lineage(blacklist, output, conn)
