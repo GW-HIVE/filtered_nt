@@ -18,9 +18,10 @@ Unsupported License to this version of the software.
 
 |Version | Downloadable Files | File Size | Release Notes|NCBI Download Date|
 |--------|--------------------|-----------|--------------|------------------|
-|Vesrion 6.0| [Filtered NT v6.0](https://hive.biochemistry.gwu.edu/prd/filterednt//content/filtered_nt_July_2018.fasta)| 168G|[Release Notes v6](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv6)|July 2018|
-|Version 5.0|[Filtered_NT v5.0](https://hive.biochemistry.gwu.edu/prd//filterednt/content/Filtered_NTv5.0.fasta)|131G|[Release Notes v5.0](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv5)|May 2017|
-|Version 4.0| [Filtered NT v4.0](https://hive.biochemistry.gwu.edu/prd//filterednt/content/Filtered_NTv4.0.fasta)|110G|[Release Notes v4.0](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv4)|July 2016|
+|Version 7.0 | [Filtered NT v7.0]() | 278 G | [Release Notes v7.0](https://github.com/GW-HIVE/filtered_nt/tree/Filtered-NT-v7.0/Release_Notes_v7.0.md) | 2023-05-16 | 
+|Version 6.0| [Filtered NT v6.0](https://hive.biochemistry.gwu.edu/prd/filterednt//content/filtered_nt_July_2018.fasta)| 168 G|[Release Notes v6](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv6)|July 2018|
+|Version 5.0|[Filtered_NT v5.0](https://hive.biochemistry.gwu.edu/prd//filterednt/content/Filtered_NTv5.0.fasta)|131 G|[Release Notes v5.0](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv5)|May 2017|
+|Version 4.0| [Filtered NT v4.0](https://hive.biochemistry.gwu.edu/prd//filterednt/content/Filtered_NTv4.0.fasta)|110 G|[Release Notes v4.0](https://hive.biochemistry.gwu.edu/filterednt/releasenotesv4)|July 2016|
 
 
 
@@ -86,8 +87,8 @@ taxdump version: 2023-06-20
 
 commands:
 
-	mkdir taxdump
-	cd taxdump
+	mkdir new_taxdump
+	cd new_taxdump
 	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz'
 	tar xfz new_taxdump.tar.gz
 
