@@ -84,3 +84,11 @@ cat logs/logfile.accession2taxid_test.txt | epost -db nuccore -format acc | elin
 972,514,757 /tmp/tmp.kb7bmdsyZl
 
 PID: 2784320
+
+14,384,694,720 * 0.06 = 863,081,683.2
+
+36,331,904
+
+93,245,213 nt
+
+11,283,515
