@@ -120,7 +120,6 @@ def create_connection(db_file):
     """
 
     # protein_conn, dead_conn, taxonomy_conn = None, None, None
-    print(db_file)
 
     try:
         protein_conn = sqlite3.connect(f'{db_file}/protein_taxonomy.db')
@@ -168,41 +167,32 @@ def get_taxonomy(conn, accession):
 
     return row
 
-def filter_nt(protein_conn, dead_conn, taxonomy_conn, nt, black_dict, outfile):
+def filter_nt(protein_conn, dead_conn, taxonomy_conn, nt, black_dict, outfile, stats):
     """Filter NT"""
     
     black_stats = {}
     with open(outfile, 'w', encoding='utf-8') as filtered:
-        count = 0
-        for record in SeqIO.parse(nt, 'fasta'):
-            count += 1
-            prot_result, tax_result, dead_result = '', '', ''
-            accession = record.id.split('.')[0]
-            result = get_taxonomy(taxonomy_conn, accession)
-            # import pdb; pdb.set_trace()
-            if result == 'not found':
-                result = get_taxonomy(protein_conn, accession)
+        with open(stats, 'w', encoding='utf-8')as stat_file:
+            writer = csv.writer(stat_file, delimiter='\t')
+            writer.writerow(['accession','taxid', 'node', 'name'])
+            count = 0
+            for record in SeqIO.parse(nt, 'fasta'):
+                count += 1
+                accession = record.id.split('.')[0]
+                result = get_taxonomy(taxonomy_conn, accession)
+                # import pdb; pdb.set_trace()
                 if result == 'not found':
-                    result = get_taxonomy(dead_conn, accession)
+                    result = get_taxonomy(protein_conn, accession)
                     if result == 'not found':
-                        raise f'{accession} Not Found'
-            if str(result[1]) in black_dict.keys():
-                    black_stats[accession] = result[1], black_dict[str(result[1])][0], black_dict[str(result[1])][1]  
-            else:
-                filtered.write(">%s\n%s\n" % (record.id, record.seq))
-                
-            # if len(black_stats) == 10000:
-            #     return black_stats
-
-def write_blackstats(blackstats: dict, stats:str):
-    """Write Blacklist stats
-    """
-
-    with open(stats, 'w', encoding='utf-8')as stat_file:
-        writer = csv.writer(stat_file, delimiter='\t')
-        writer.writerow(['accession','taxid', 'node', 'name'])
-        for key, value in blackstats.items():
-            writer.writerow([key, value[0], value[1], value[2]])
+                        result = get_taxonomy(dead_conn, accession)
+                        if result == 'not found':
+                            raise f'{accession} Not Found'
+                if str(result[1]) in black_dict.keys():
+                    # print(accession, '\t', result[1] , black_dict[str(result[1])][0], black_dict[str(result[1])][1] )
+                    # black_stats[accession] = result[1], black_dict[str(result[1])][0], black_dict[str(result[1])][1] 
+                    writer.writerow([accession, result[1], black_dict[str(result[1])][0], black_dict[str(result[1])][1]]) 
+                else:
+                    filtered.write(">%s\n%s\n" % (record.id, record.seq))
 
 def main():
     """Main Function"""
@@ -211,8 +201,8 @@ def main():
     options = usr_args()
     protein_conn, dead_conn, taxonomy_conn = create_connection(options.database)
     black_dict = read_blacklist(options.blacklist)
-    blackstats = filter_nt(protein_conn, dead_conn, taxonomy_conn, options.nt, black_dict, options.output)
-    write_blackstats(blackstats, options.stats)
+    blackstats = filter_nt(protein_conn, dead_conn, taxonomy_conn, options.nt, black_dict, options.output, options.stats)
+    # write_blackstats(blackstats, options.stats)
 
 if __name__ == '__main__':
     main()
