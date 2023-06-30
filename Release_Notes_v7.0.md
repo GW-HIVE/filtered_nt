@@ -66,18 +66,29 @@ dead_taxonomy.db    | 20 G       | 293,340,296
 ************************************************************************
 ## Filter statistics
 
-Number of taxonomy ids that are in black list is 1,452,016.
-Number of blacklisted sequences is 11,283,515 sequences.
+- Number of taxonomy ids that are in black list is 1,071,712.
+- Number of blacklisted sequences is 11,283,515 sequences.
 
 Sequences from a given black list of sources were removed. This list
 of sources, number of associated taxonomic IDs and number 
 of removed sequences is given below.
 
-blackListTaxonomyName | taxids | removed sequences
-----------------------|--------|-------------------
-unidentified          |  .     |  .
-total                 | 1,452,016 | 11,283,515
-
+blackListTaxonomyName | taxids   | removed sequences
+----------------------|----------|-------------------
+unclassified          |  983,330 | 2,993,613
+phage                 |  17,399  | 23,927
+other sequence        |  636     | 22,0257
+uncultured            |  26,079  | 7,763,334
+unidentified          |  1,874   | 125,302
+vector                |  16,928  | 29,731
+unknown               |  351     | 2,157
+unidentified;vector   |  2       | 368
+environmental sample  |  24,830  | 87,063
+unspecified           |  89      | 33,887
+phage;vector          |  17      | 17
+uncultured;phage      |  177     | 3858
+uncultured            |  5       | 5 
+total                 | 1,071,712 | 11,283,515
 
 The number of sequences in this filtered-nt release is 
-	81,961,699
+   81,961,699
