@@ -31,8 +31,8 @@ from sqlite3 import Error
 from argparse import ArgumentParser, SUPPRESS
 from Bio import SeqIO
 
-__version__="1.0"
-__status__ = "Dev"
+__version__="7.0"
+__status__ = "Prd"
 
 def usr_args():
     """User Arguments
