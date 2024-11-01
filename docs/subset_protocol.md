@@ -1,0 +1,133 @@
+# Filtered NT Subset protocol
+
+************************************************************************
+## Step 0. Set up the local repo
+************************************************************************
+Clone the repo and add data directories:
+
+	git clone https://github.com/GW-HIVE/filtered_nt.git
+	cd filtered_nt
+	mkdir raw_data
+	mkdir output_data
+	mkdir logfiles
+
+Create and activate virtual environment:
+
+	python -m venv env
+	. env/bin/activate
+	python -m pip install requirements.txt
+
+************************************************************************
+## Step 1. Download the whole nt file
+************************************************************************
+This is a very large file. It will take a long time.
+
+downloaded from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
+
+commands:
+
+	cd raw_data
+    wget ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
+    gunzip nt.gz
+
+************************************************************************
+## Step 2. Download the taxonomy list 
+************************************************************************
+downloaded from: ftp://ftp.ncbi.nih.gov/pub/taxonomy/
+
+accession2taxid version: 2023-06-19
+
+commands:
+
+	mkdir accession2taxid
+	cd accession2taxid
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/dead_nucl.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/dead_prot.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/dead_wgs.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/nucl_wgs.accession2taxid.EXTRA.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/nucl_wgs.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/pdb.accession2taxid.gz'
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz'
+
+************************************************************************
+## Step 3. Create Taxonomy DB 
+************************************************************************
+Hat tip to https://github.com/acorg/ncbi-taxonomy-database
+
+taxdump version: 2023-06-20
+
+commands:
+
+	mkdir new_taxdump
+	cd new_taxdump
+	curl -O -L 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz'
+	tar xfz new_taxdump.tar.gz
+
+There is a `Makefile` in the repo root. This is for constructing the
+taxonomy-accession DBs that we will use later on. Each of the DBs will take a
+significant amount of time to build so be patient. 
+
+a) To create the `taxonomy.db` file run:
+
+	make nucleotide
+
+b) To create the `dead_taxonomy.db` file run:
+
+	make dead
+
+c) To create the `protein_taxonomy.db` file run:
+
+	make proteiin
+
+
+************************************************************************
+## Step 4. Generate black list
+************************************************************************
+There are two scripts for generating the black list. The first will get all taxonomy names with the strings above. The second will get all child taxonomy names of those terms above.
+Unwanted taxonomy names (scientific names) from names.dmp include:
+
+		['unclassified','unidentified','uncultured', 'unspecified','unknown',
+		'phage','vector', 'environmental sample','artificial sequence',
+		'other sequence']
+
+
+
+ - script: `taxid_filterlist.py`
+	
+	default output: `./output_data/filter.csv`
+
+After generating `filter.csv`, use command line "sort -u" to delete duplicated records, and store the results in a duplicate file:
+
+	sort -u filter.csv > filter_unique.csv
+
+QC step: Compare the newly generated file with the original version.
+
+	wc -l filter_unique.csv
+		1509867 output_data/filter_unique.csv
+
+
+	wc -l filter.csv
+		1515476 output_data/filter.csv
+
+
+************************************************************************
+## Step 5. Check the completion of taxonomy list (QC)
+************************************************************************
+We need to check if all accessions in the `nt` file have a taxId associated
+with it from our DBs. If you find any you will need to trouble shoot those.
+
+
+ - script: `ac2taxid_check.py`
+
+	default output: `./logfiles/accession2taxid_log.txt`
+
+The output file `accession2taxid_log.txt` should be empty. If not you will
+have to trouble shoot.
+
+************************************************************************
+## Step 6. Filtering nt file
+************************************************************************
+protocol: 
+
+ - script: `filter-nt.py`

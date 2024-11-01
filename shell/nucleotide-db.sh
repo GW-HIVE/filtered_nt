@@ -45,6 +45,6 @@ CREATE TABLE IF NOT EXISTS accession_taxid (
 DROP INDEX IF EXISTS accession_taxid_accession_idx;
 
 .mode tabs
-.import $tmp2 accession_taxid
+.import $tmp accession_taxid
 CREATE UNIQUE INDEX accession_taxid_accession_idx ON accession_taxid(accession);
 EOT

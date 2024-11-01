@@ -1,0 +1,41 @@
+# Fri Oct 18 10:29:30 EDT 2024
+
+ nt.gz   2024-02-08 08:41    378G   -> 38m 42s
+
+ 326M Oct 18 10:52 dead_nucl.accession2taxid.gz
+ 1.2G Oct 18 10:52 dead_prot.accession2taxid.gz
+ 765M Oct 18 10:52 dead_wgs.accession2taxid.gz
+ 2.3G Oct 18 10:53 nucl_gb.accession2taxid.gz
+  20M Oct 18 10:53 nucl_wgs.accession2taxid.EXTRA.gz
+ 4.9G Oct 18 10:53 nucl_wgs.accession2taxid.gz
+ 6.3M Oct 18 10:53 pdb.accession2taxid.gz
+ 9.2G Oct 18 10:54 prot.accession2taxid.gz
+ 
+ 133M Oct 18 10:58 new_taxdump.tar.gz
+
+ had to creat sbatch files for make
+
+ gunzip nt.gz ==> 11:37:55 EDT 2024
+ 1.5T Oct 18 11:25 nt
+
+sacct -j 4152448 --format JobID,Start,End,Elapsed,NCPUS,CPUTime,JobName
+sacct -j 4152448 --format JobID,Start,End,Elapsed,NCPUS,CPUTime
+
+JobID       Start                   End           Elapsed       NCPUS  JobName
+4147091 2024-10-29T10:56:17 2024-10-29T11:13:14   00:16:57         40 deadDB.sh
+4147100 2024-10-29T11:08:29 2024-10-29T11:08:41   00:00:12         40 protDB.sh
+4147093 2024-10-29T10:58:02 2024-10-29T11:46:04   00:48:02         40 nucleotideDB.sh
+4147100 2024-10-29T11:08:29 2024-10-29T11:08:41   00:00:12         40 parent_blacklist.sh
+4147931 2024-10-29T17:15:37 2024-10-29T17:16:46   00:01:09         40 child_taxid_blacklist.py
+4147995 2024-10-29T17:26:59 2024-10-29T17:27:01   00:00:02         40 sort_u.sh
+4148035 2024-10-29T17:36:02 2024-10-29T17:36:02   00:00:00         40 wc_blacklist.sh
+4148078 2024-10-29T17:42:58 2024-10-29T20:43:21   03:00:23         40 acc2taxid_check.sh
+4148214 2024-10-29T18:12:04 2024-10-29T22:52:44   04:40:40         36 nt_filter.sh
+
+
+Testing the filter:
+4152183 2024-10-30T10:58:57 2024-10-30T10:59:03   00:00:06         40  whitelist.sh -> archaea_filter.csv 25,488
+4152182 2024-10-30T10:58:10 2024-10-30T10:58:24   00:00:14         40  whitelist.sh -> bacteria_filter.csv 1,355,240
+4152185 2024-10-30T11:06:01 2024-10-30T11:06:17   00:00:16         40  whitelist.sh -> viruses_filter.csv 267,886
+4152191 2024-10-30T14:18:02 2024-10-30T16:49:43   02:31:41         36  viruses_nt_filter.sh 
+4152392 2024-10-30T17:13:44 2024-10-30T18:13:53   01:00:09         40  archaea_filter_nt.sh
