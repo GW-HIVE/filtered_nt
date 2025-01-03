@@ -78,7 +78,7 @@ b) To create the `dead_taxonomy.db` file run:
 
 c) To create the `protein_taxonomy.db` file run:
 
-	make proteiin
+	make protein
 
 
 ************************************************************************
