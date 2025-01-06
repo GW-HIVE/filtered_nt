@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=ntFilter
-#SBATCH --output=logs/ntFilter-%j.log
-#SBATCH --error=logs/ntFilter-%j.err
+#SBATCH --job-name=gunzipNT
+#SBATCH --output=logs/gunzipNT-%j.log
+#SBATCH --error=logs/gunzipNT-%j.err
 #SBATCH --chdir=/dfs9/evilain-lab/share/filtered_nt  #Set the working directory of the batch script
 #SBATCH --partition=standard
 #SBATCH --ntasks=1
@@ -12,5 +12,4 @@
 #SBATCH --mail-user=kingch2@hs.uci.edu
 #SBATCH -A EVILAIN_LAB
 
-module load python/3.10.2
-python python/filter_nt.py -n raw_data/nt -d output_data/ -o output_data/filteredNT_v8.0.1.fasta -b output_data/blacklist_children_unique.csv -s output_data/blackstats.tsv
+-d output_data/ -n raw_data/nt -l logs/accession2taxid_log.txt

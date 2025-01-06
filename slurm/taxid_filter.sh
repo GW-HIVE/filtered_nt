@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=ntFilter
-#SBATCH --output=logs/ntFilter-%j.log
-#SBATCH --error=logs/ntFilter-%j.err
+#SBATCH --job-name=taxFilter
+#SBATCH --output=logs/taxFilter-%j.log
+#SBATCH --error=logs/taxFilter-%j.err
 #SBATCH --chdir=/dfs9/evilain-lab/share/filtered_nt  #Set the working directory of the batch script
 #SBATCH --partition=standard
 #SBATCH --ntasks=1
@@ -13,4 +13,9 @@
 #SBATCH -A EVILAIN_LAB
 
 module load python/3.10.2
-python python/filter_nt.py -n raw_data/nt -d output_data/ -o output_data/filteredNT_v8.0.1.fasta -b output_data/blacklist_children_unique.csv -s output_data/blackstats.tsv
+
+echo "[$(date)] Generating nt filter list"
+python python/taxid_filterlist.py -d output_data/ -o ./output_data/filter_v8.0.1.csv
+
+echo "[$(date)] Sorting filter_v8.0.1.csv"
+sort -u output_data/filter_v8.0.1.csv > output_data/filter_v8.0.1_unique.csv
