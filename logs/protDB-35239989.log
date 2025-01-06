@@ -5,3 +5,6 @@ rm -f output_data/protein_taxonomy.db
 raw_data/accession2taxid/
 955726 /tmp/kingch2/35239989/tmp.GYW3ntpRX3
 1403750421 /tmp/kingch2/35239989/tmp.GYW3ntpRX3
+./shell/add-nodes.sh raw_data/new_taxdump/nodes.dmp output_data/protein_taxonomy.db
+./shell/add-names.sh raw_data/new_taxdump/names.dmp output_data/protein_taxonomy.db
+./shell/add-hosts.sh raw_data/new_taxdump/host.dmp output_data/protein_taxonomy.db

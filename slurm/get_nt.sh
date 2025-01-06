@@ -14,8 +14,22 @@
 
 
     # Get NT
-wget --quiet -O raw_data/nt.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
+echo "[$(date)] Downloading nt.fasta.gz"
+wget --quiet -O raw_data/nt.gz ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz
 
     # Get NT.md5
-wget --quiet -O raw_data/nt.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz.md5
+echo "[$(date)] Downloading nt.fasta.gz.md5"
+wget --quiet -O raw_data/nt.gz.md5 ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nt.gz.md5
+
+# Verify MD5 checksum
+cd raw_data
+echo "[$(date)] Verifying MD5"
+md5sum -c nt.gz.md5
+
+if [ $? -eq 0 ]; then
+    echo "MD5 checksum verification passed."
+else
+    echo "MD5 checksum verification failed!" >&2
+    exit 1
+fi
 
