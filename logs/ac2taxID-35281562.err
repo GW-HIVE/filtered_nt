@@ -1,0 +1,2 @@
+usage: ac2taxid_check.py [-d DATABASE] [-n NT] [-l LOGFILE] [-v] [-h]
+ac2taxid_check.py: error: unrecognized arguments: 2-d output_data/

@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=gunzipNT
-#SBATCH --output=logs/gunzipNT-%j.log
-#SBATCH --error=logs/gunzipNT-%j.err
+#SBATCH --job-name=ac2taxID
+#SBATCH --output=logs/ac2taxID-%j.log
+#SBATCH --error=logs/ac2taxID-%j.err
 #SBATCH --chdir=/dfs9/evilain-lab/share/filtered_nt  #Set the working directory of the batch script
 #SBATCH --partition=standard
 #SBATCH --ntasks=1
@@ -12,4 +12,7 @@
 #SBATCH --mail-user=kingch2@hs.uci.edu
 #SBATCH -A EVILAIN_LAB
 
--d output_data/ -n raw_data/nt -l logs/accession2taxid_log.txt
+module load python/3.10.2
+
+python python/ac2taxid_check.py -d output_data/ -n raw_data/nt -l logs/accession2taxid_log.txt
+

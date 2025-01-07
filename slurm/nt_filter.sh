@@ -13,4 +13,14 @@
 #SBATCH -A EVILAIN_LAB
 
 module load python/3.10.2
-python python/filter_nt.py -n raw_data/nt -d output_data/ -o output_data/filteredNT_v8.0.1.fasta -b output_data/blacklist_children_unique.csv -s output_data/blackstats.tsv
+
+source env/bin/activate
+
+python python/filter_nt.py \
+	-n raw_data/nt \
+	-d output_data/ \
+	-o output_data/filteredNT_v8.0.1.fasta \
+	-s output_data/blackstats.tsv \
+	-l output_data/filter_v8.0.1_unique.csv \
+	-m blacklist
+
