@@ -1,0 +1,11 @@
+echo raw_data/ output_data/taxonomy.db
+raw_data/ output_data/taxonomy.db
+rm -f output_data/taxonomy.db
+./shell/nucleotide-db.sh raw_data/accession2taxid/ output_data/taxonomy.db
+raw_data/accession2taxid/
+4015403 /tmp/kingch2/35240082/tmp.Wa1UwM5TX3
+721780834 /tmp/kingch2/35240082/tmp.Wa1UwM5TX3
+1060709304 /tmp/kingch2/35240082/tmp.Wa1UwM5TX3
+./shell/add-nodes.sh raw_data/new_taxdump/nodes.dmp output_data/taxonomy.db
+./shell/add-names.sh raw_data/new_taxdump/names.dmp output_data/taxonomy.db
+./shell/add-hosts.sh raw_data/new_taxdump/host.dmp output_data/taxonomy.db

@@ -1,0 +1,19 @@
+echo raw_data/ output_data/taxonomy.db
+raw_data/ output_data/taxonomy.db
+rm -f output_data/taxonomy.db
+./shell/nucleotide-db.sh raw_data/accession2taxid/ output_data/taxonomy.db
+raw_data/accession2taxid/
+4015403 /tmp/kingch2/35239825/tmp.T8EWVaqD1n
+721780834 /tmp/kingch2/35239825/tmp.T8EWVaqD1n
+1060709304 /tmp/kingch2/35239825/tmp.T8EWVaqD1n
+echo raw_data/ output_data/dead_taxonomy.db
+raw_data/ output_data/dead_taxonomy.db
+rm -f output_data/dead_taxonomy.db
+./shell/dead-db.sh raw_data/accession2taxid/ output_data/dead_taxonomy.db
+raw_data/accession2taxid/
+110091810 /tmp/kingch2/35239825/tmp.lxrU3EWqoJ
+157188578 /tmp/kingch2/35239825/tmp.lxrU3EWqoJ
+317247053 /tmp/kingch2/35239825/tmp.lxrU3EWqoJ
+./shell/add-nodes.sh raw_data/new_taxdump/nodes.dmp output_data/dead_taxonomy.db
+./shell/add-names.sh raw_data/new_taxdump/names.dmp output_data/dead_taxonomy.db
+./shell/add-hosts.sh raw_data/new_taxdump/host.dmp output_data/dead_taxonomy.db
